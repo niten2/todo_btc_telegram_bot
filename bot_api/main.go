@@ -3,7 +3,7 @@ package bot_api
 import (
   "fmt"
   "os"
-  // "github.com/joho/godotenv"
+  "github.com/joho/godotenv"
 	"log"
 	"gopkg.in/telegram-bot-api.v4"
   "strconv"
@@ -18,7 +18,7 @@ func InitBot() *tgbotapi.BotAPI {
 		log.Panic(err)
 	}
 
-	bot.Debug = true
+	// bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -30,13 +30,13 @@ func CreateMessage() string {
   balance_wallet := request.GetBitapsBalanceWallet()
 
   return fmt.Sprintf(`
-    текущий курс %s \n
-    btc в кошельке 0.%d \n
+    текущий курс %s
+    btc в кошельке 0.%d
   `, usd, balance_wallet)
 }
 
 func SendMessage(bot *tgbotapi.BotAPI) {
-  user_id, _ := strconv.ParseInt(os.Getenv("USER_ID"), 10, 64)
+  user_id, _ := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
   message := CreateMessage()
 
   bot.Send(tgbotapi.NewMessage(user_id, message))
