@@ -3,7 +3,6 @@ package bot_api
 import (
   "fmt"
   "os"
-  "github.com/joho/godotenv"
 	"log"
 	"gopkg.in/telegram-bot-api.v4"
   "strconv"
