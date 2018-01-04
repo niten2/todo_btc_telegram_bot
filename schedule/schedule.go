@@ -1,19 +1,19 @@
 package schedule
 
 import (
-	"fmt"
+	// "fmt"
+  "log"
 	"github.com/jasonlvhit/gocron"
 	"gopkg.in/telegram-bot-api.v4"
-  "app-telegram/bot"
+  "app-telegram/bot_api"
 )
 
-func Run (instanseBot *tgbotapi.BotAPI) {
-	gocron.Every(5).Seconds().Do(bot.SendMessage, instanseBot)
+func Run (bot *tgbotapi.BotAPI) {
+	gocron.Every(1).Seconds().Do(bot_api.SendMessage, bot)
 	// gocron.Every(1).Day().At("10:30").Do(task)
 
-	_, time := gocron.NextRun()
-	fmt.Println(time)
-
   gocron.Start()
+
+  log.Printf("start schedule every one seconds")
 }
 

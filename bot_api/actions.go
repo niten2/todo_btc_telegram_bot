@@ -1,12 +1,14 @@
-package action
+package bot_api
 
 import (
-  // "fmt"
+  "fmt"
 	"log"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
-func Run (bot *tgbotapi.BotAPI) {
+func InitActions (bot *tgbotapi.BotAPI) {
+  fmt.Println("InitActions for bot")
+
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -33,6 +35,7 @@ func Run (bot *tgbotapi.BotAPI) {
       default:
         msg = tgbotapi.NewMessage(update.Message.Chat.ID, "команда непонятна")
     }
+
     bot.Send(msg)
 	}
 }
