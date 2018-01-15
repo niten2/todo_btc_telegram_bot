@@ -73,3 +73,9 @@ func GetBitapsBalanceWallet() int {
 
   return res.Balance
 }
+
+
+
+// poloniex api
+// https://poloniex.com/public?command=returnTicker
+
