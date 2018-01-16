@@ -1,7 +1,7 @@
 package bot_api
 
 import (
-  "fmt"
+  // "fmt"
 	"testing"
   "github.com/joho/godotenv"
   . "github.com/smartystreets/goconvey/convey"

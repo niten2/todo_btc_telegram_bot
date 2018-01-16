@@ -8,3 +8,9 @@
 #### Development mode
 - cp .env.sample .env
 - go run
+
+
+### poloniex
+
+p BTC SBD 0.000020
+
