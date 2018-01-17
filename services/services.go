@@ -3,6 +3,7 @@ package services
 import (
 	"crypto/rand"
 	"fmt"
+  // "app-telegram/models"
 )
 
 func GenerateId() string {
@@ -10,3 +11,7 @@ func GenerateId() string {
 	rand.Read(b)
 	return fmt.Sprintf("%x", b)
 }
+
+// func UpdateCoins() {
+//   models.BuildCoins(request.PoloniexRequest())
+// }

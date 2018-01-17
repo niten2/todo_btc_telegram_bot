@@ -47,8 +47,6 @@ func FindUser(Db *mgo.Database, Name string) User {
   return user
 }
 
-
-
 // func UserLogin(email string, password string) (user *User, err error) {
 //   user = &User{}
 //   encryptedPassword := userEncrypedPassword(password)

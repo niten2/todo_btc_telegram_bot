@@ -13,7 +13,7 @@ import (
 //   Db *mgo.Database
 // )
 
-func Connect() *mgo.Database {
+func Connect() (*mgo.Database, *mgo.Session) {
   db_url := config.Settings().DbUrl
   db_name := config.Settings().DbName
 
@@ -35,5 +35,5 @@ func Connect() *mgo.Database {
   // Mongo = mongo
   Db := Session.DB(db_name)
 
-  return Db
+  return Db, Session
 }

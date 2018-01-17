@@ -14,13 +14,11 @@ func init() {
 func TestConnect(t *testing.T) {
 
   Convey("should", t, func() {
-    db := Connect()
+    db, session := Connect()
+    defer session.Close()
 
     So(db, ShouldNotBeNil)
-
-    // So(Db, ShouldNotBeNil)
-    // So(Mongo, ShouldNotBeNil)
-    // So(Session, ShouldNotBeNil)
+    So(session, ShouldNotBeNil)
   })
 
 }
