@@ -14,16 +14,16 @@ func init() {
   _ = godotenv.Load("../.env.test")
 }
 
-func TestUser(t *testing.T) {
+func TestCoin(t *testing.T) {
   Db := db.Connect()
   Db.DropDatabase()
 
-  Convey("CreateUser", t, func() {
-    _ = CreateUser(Db, "nam", "id-ttt")
+  Convey("CreateCoin", t, func() {
+    CreateCoin(Db, "BTC_USDT", "0.00003")
 
-    find_user := FindUser(Db, "nam")
+    coin := FindCoin(Db, "BTC_USDT")
 
-    So(find_user, ShouldNotBeNil)
+    So(coin, ShouldNotBeNil)
   })
 
 }

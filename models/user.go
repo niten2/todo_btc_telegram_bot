@@ -2,43 +2,52 @@ package models
 
 import (
   // "fmt"
-  // "app-telegram/db"
+  "gopkg.in/mgo.v2"
+  "gopkg.in/mgo.v2/bson"
+  // "app-telegram/services"
   // "crypto/sha256"
-  // "github.com/astaxie/beego"
 )
 
 type User struct {
-  ID string
-  IdTelegramm string
-  Name string
-  // LastName string           `gorm:"type:varchar(128);not null;"`
-  // Email string              `gorm:"type:varchar(128);not null;unique_index"`
-  // EncryptedPassword string  `gorm:"type:varchar(128);not null;index"`
+  // ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
+  ID string `json:"id" bson:"_id,omitempty"`
+  IdTelegramm string `json:"id_telegramm"`
+  Name string `json:"name"`
 }
 
-// func (u *User) AsMap() map[string]string {
-//   user := make(map[string]string)
-//   user["id"] = u.ID
-//   user["name"] = fmt.Sprintf("%s %s", u.FirstName, u.LastName)
-//   user["email"] = u.Email
-//   return user
-// }
+func (u *User) AsMap() map[string]string {
+  user := make(map[string]string)
 
-func CreateUser(name string) User {
+  user["id"] = u.ID
+  user["id_telegramm"] = u.IdTelegramm
 
+  return user
+}
+
+func CreateUser(Db *mgo.Database, Name string, IdTelegramm string) User {
   user_collection := Db.C("users")
 
+  user_document := User{Name: Name, IdTelegramm: IdTelegramm}
 
-  userDocument := User{id: services.GenerateId(), name: name}
+  user_collection.Insert(user_document)
 
-  postsCollection.Insert(userDocument)
-
-  return userDocument
+  return user_document
 }
-// func init() {
-//   db.RegisterMigration(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
-//   db.RegisterModel(&User{})
-// }
+
+func FindUser(Db *mgo.Database, Name string) User {
+  user_collection := Db.C("users")
+
+  user := User{}
+  err := user_collection.Find(bson.M{"name": Name}).One(&user)
+
+  if err != nil {
+    panic(err.Error())
+  }
+
+  return user
+}
+
+
 
 // func UserLogin(email string, password string) (user *User, err error) {
 //   user = &User{}

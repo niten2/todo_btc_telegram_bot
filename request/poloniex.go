@@ -2,14 +2,12 @@ package request
 
 import (
   _ "fmt"
-  // "os"
 	"log"
   "net/http"
   "encoding/json"
   "io/ioutil"
-  // "github.com/parnurzeal/gorequest"
+  // "os"
 )
-
 
 type PoloniexCoin struct {
   Last string `json:"last"`
