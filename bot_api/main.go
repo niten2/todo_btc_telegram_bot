@@ -3,23 +3,23 @@ package bot_api
 import (
   "fmt"
   "os"
-	"log"
-	"gopkg.in/telegram-bot-api.v4"
+  "log"
+  "gopkg.in/telegram-bot-api.v4"
   "strconv"
   "app-telegram/request"
 )
 
 func InitBot() *tgbotapi.BotAPI {
   telegram_token := os.Getenv("TELEGRAM_TOKEN")
-	bot, err := tgbotapi.NewBotAPI(telegram_token)
+  bot, err := tgbotapi.NewBotAPI(telegram_token)
 
-	if err != nil {
-		log.Panic(err)
-	}
+  if err != nil {
+    log.Panic(err)
+  }
 
-	// bot.Debug = true
+  // bot.Debug = true
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+  log.Printf("Authorized on account %s", bot.Self.UserName)
 
   return bot
 }

@@ -2,39 +2,39 @@ package bot_api
 
 import (
   "fmt"
-	"log"
-	"gopkg.in/telegram-bot-api.v4"
+  "log"
+  "gopkg.in/telegram-bot-api.v4"
   "regexp"
 )
 
 func InitActions (bot *tgbotapi.BotAPI) {
   fmt.Println("InitActions for bot")
 
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
+  u := tgbotapi.NewUpdate(0)
+  u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
+  updates, err := bot.GetUpdatesChan(u)
 
-	if err != nil {
-		log.Panic(err)
-	}
+  if err != nil {
+    log.Panic(err)
+  }
 
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
+  for update := range updates {
+    if update.Message == nil {
+      continue
+    }
 
     user_name := update.Message.From.UserName
     chat_id := update.Message.Chat.ID
     text := update.Message.Text
 
-		log.Printf("[%s] %s", user_name, text, chat_id)
+    log.Printf("[%s] %s", user_name, text, chat_id)
 
     message := CreateResponse(text)
     response := tgbotapi.NewMessage(chat_id, message)
 
     bot.Send(response)
-	}
+  }
 }
 
 func CreateResponse(input string) string {
