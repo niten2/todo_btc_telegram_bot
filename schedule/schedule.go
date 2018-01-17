@@ -28,7 +28,6 @@ func Run (bot *tgbotapi.BotAPI) {
 
   log.Printf(`start schedule update poloniex coins every 10 minutes`)
   gocron.Every(10).Minutes().Do(models.UpdateCoinsPoloniex)
-  // gocron.Every(20).Seconds().Do(models.UpdateCoinsPoloniex)
 
   gocron.Start()
 }
