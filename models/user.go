@@ -26,7 +26,7 @@ type User struct {
 
 func CreateUser(name string) User {
 
-  user_collection := db.C("users")
+  user_collection := Db.C("users")
 
 
   userDocument := User{id: services.GenerateId(), name: name}
