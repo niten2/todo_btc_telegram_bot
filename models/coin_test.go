@@ -3,8 +3,6 @@ package models
 import (
   // "fmt"
   "testing"
-  // "os"
-  // "strconv"
   "github.com/joho/godotenv"
   . "github.com/smartystreets/goconvey/convey"
   "app-telegram/db"
