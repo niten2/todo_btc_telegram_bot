@@ -44,7 +44,7 @@ func TestMatchURL(t *testing.T) {
       Reply(200).
       BodyString(body)
 
-    res := PoloniexRequest()
+    res, _ := PoloniexRequest()
 
     coins := make(map[string]PoloniexCoin)
     coins["BTC_BCN"] = PoloniexCoin{Last: "0.00000066"}

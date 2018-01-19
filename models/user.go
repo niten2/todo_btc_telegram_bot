@@ -2,10 +2,10 @@ package models
 
 import (
   // "fmt"
-  "gopkg.in/mgo.v2"
-  "gopkg.in/mgo.v2/bson"
-  // "app-telegram/services"
+  // "gopkg.in/mgo.v2"
   // "crypto/sha256"
+  "gopkg.in/mgo.v2/bson"
+  "app-telegram/db"
 )
 
 type User struct {
@@ -24,8 +24,8 @@ func (u *User) AsMap() map[string]string {
   return user
 }
 
-func CreateUser(Db *mgo.Database, Name string, IdTelegramm string) User {
-  user_collection := Db.C("users")
+func CreateUser(Name string, IdTelegramm string) User {
+  user_collection := db.Db.C("users")
 
   user_document := User{Name: Name, IdTelegramm: IdTelegramm}
 
@@ -34,8 +34,8 @@ func CreateUser(Db *mgo.Database, Name string, IdTelegramm string) User {
   return user_document
 }
 
-func FindUser(Db *mgo.Database, Name string) User {
-  user_collection := Db.C("users")
+func FindUser(Name string) User {
+  user_collection := db.Db.C("users")
 
   user := User{}
   err := user_collection.Find(bson.M{"name": Name}).One(&user)

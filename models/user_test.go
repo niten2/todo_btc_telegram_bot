@@ -2,9 +2,9 @@ package models
 
 import (
   // "fmt"
-  "testing"
   // "os"
   // "strconv"
+  "testing"
   "github.com/joho/godotenv"
   . "github.com/smartystreets/goconvey/convey"
   "app-telegram/db"
@@ -12,16 +12,16 @@ import (
 
 func init() {
   _ = godotenv.Load("../.env.test")
+	db.Connect()
 }
 
 func TestUser(t *testing.T) {
-  Db := db.Connect()
-  Db.DropDatabase()
+  db.Db.DropDatabase()
 
   Convey("CreateUser", t, func() {
-    _ = CreateUser(Db, "nam", "id-ttt")
+    _ = CreateUser("nam", "id-ttt")
 
-    find_user := FindUser(Db, "nam")
+    find_user := FindUser("nam")
 
     So(find_user, ShouldNotBeNil)
   })

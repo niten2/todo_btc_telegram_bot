@@ -1,8 +1,8 @@
 package request
 
 import (
-  // "fmt"
-	"log"
+  "fmt"
+	// "log"
   "net/http"
   "encoding/json"
   "io/ioutil"
@@ -16,40 +16,27 @@ type PoloniexCoin struct {
   Last string `json:"last"`
 }
 
-func PoloniexRequest() map[string]PoloniexCoin {
-
-  // models.Coin
-
+func PoloniexRequest() (map[string]PoloniexCoin, error) {
   url_poloniex := "https://poloniex.com/public?command=returnTicker"
 
   res, err := http.Get(url_poloniex)
 
 	if err != nil {
-		log.Panic(err)
+    fmt.Println("error", err)
 	}
+
+  defer res.Body.Close()
 
   body, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		log.Panic(err)
+    fmt.Println("error", err)
+    return nil, err
 	}
 
 	var coins map[string]PoloniexCoin
-	// var coins map[string]models.Coin
-	// var coins map[string]string
-  // fmt.Println(body)
-
-
-  // fmt.Println(models.Coin{})
-
-  // fmt.Println(body)
 
 	json.Unmarshal(body, &coins)
 
-  // fmt.Println(coins)
-
-
-
-
-  return coins
+  return coins, nil
 }

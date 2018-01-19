@@ -3,8 +3,9 @@ package models
 import (
   // "fmt"
   "log"
-  "gopkg.in/mgo.v2"
+  // "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
+
   "app-telegram/request"
   "app-telegram/db"
 )
@@ -15,8 +16,8 @@ type Coin struct {
   Value string `json:"value"`
 }
 
-func CreateCoin(Db *mgo.Database, Name string, Value string) Coin {
-  coin_collection := Db.C("coins")
+func CreateCoin(Name string, Value string) Coin {
+  coin_collection := db.Db.C("coins")
 
   coin_document := Coin{Name: Name, Value: Value}
 
@@ -25,15 +26,15 @@ func CreateCoin(Db *mgo.Database, Name string, Value string) Coin {
   return coin_document
 }
 
-func CreateCoins(Db *mgo.Database, Coins []Coin) []Coin {
-  for _, coin := range Coins {
-    CreateCoin(Db, coin.Name, coin.Value)
-  }
+// func CreateCoins(Coins []Coin) []Coin {
+//   for _, coin := range Coins {
+//     CreateCoin(coin.Name, coin.Value)
+//   }
 
-  return Coins
-}
+//   return Coins
+// }
 
-func BuildCoins(Db *mgo.Database, Coins map[string]request.PoloniexCoin) []Coin {
+func BuildCoins(Coins map[string]request.PoloniexCoin) []Coin {
   var coins []Coin
 
   for k, v := range Coins {
@@ -44,8 +45,8 @@ func BuildCoins(Db *mgo.Database, Coins map[string]request.PoloniexCoin) []Coin 
   return coins
 }
 
-func FindCoin(Db *mgo.Database, Name string) Coin {
-  coin_collection := Db.C("coins")
+func FindCoin(Name string) Coin {
+  coin_collection := db.Db.C("coins")
 
   coin := Coin{}
   err := coin_collection.Find(bson.M{"name": Name}).One(&coin)
@@ -58,9 +59,9 @@ func FindCoin(Db *mgo.Database, Name string) Coin {
 }
 
 func UpdateCoinsPoloniex() {
-  db, session := db.Connect()
-  defer session.Close()
+  // db, session := db.Connect()
+  // defer session.Close()
 
-  CreateCoins(db, BuildCoins(db, request.PoloniexRequest()))
+  // CreateCoins(db, BuildCoins(db, request.PoloniexRequest()))
   log.Printf("coins update")
 }
