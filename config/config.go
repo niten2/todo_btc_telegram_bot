@@ -6,6 +6,8 @@ import (
   "strconv"
   "strings"
   "github.com/joho/godotenv"
+
+  // . "app-telegram/logger"
 )
 
 type Setting struct {
@@ -20,25 +22,32 @@ type Setting struct {
 
 func Settings() Setting {
   if os.Getenv("ENV") == "test" {
-    _ = godotenv.Load("../.env.test")
+    err := godotenv.Load("../.env.test")
+
+    if err != nil {
+      panic(err)
+    }
   } else {
-    _ = godotenv.Load("../.env")
+    err := godotenv.Load()
+
+    if err != nil {
+      panic(err)
+    }
   }
 
-  ScheduleEverySeconds, err := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
+  if os.Getenv("DB_URL") == "" {
+    panic("DB_URL not found")
+  }
+
+  DbName := strings.Split(os.Getenv("DB_URL"), "/")[3]
+
+  TelegramUserId, err := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
 
   if err != nil {
     fmt.Println(err)
   }
 
-  var DbName string
-  if os.Getenv("DB_URL") == "" {
-    fmt.Println("env DB_URL not found")
-  } else {
-    DbName = strings.Split(os.Getenv("DB_URL"), "/")[3]
-  }
-
-  TelegramUserId, err := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+  ScheduleEverySeconds, err := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
 
   if err != nil {
     fmt.Println(err)

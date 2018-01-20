@@ -2,16 +2,14 @@ package db
 
 import (
   // "fmt"
+  "os"
   "testing"
-  "github.com/joho/godotenv"
   . "github.com/smartystreets/goconvey/convey"
 )
 
-func init() {
-  _ = godotenv.Load("../.env.test")
-}
 
 func TestConnect(t *testing.T) {
+  os.Setenv("ENV", "test")
 
   Convey("should", t, func() {
     Connect()

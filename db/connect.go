@@ -6,6 +6,9 @@ import (
   "gopkg.in/mgo.v2"
   "app-telegram/config"
 
+  . "app-telegram/logger"
+  "github.com/sirupsen/logrus"
+
   // log "github.com/sirupsen/logrus"
 )
 
@@ -19,8 +22,11 @@ func Connect() {
   db_url := config.Settings().DbUrl
   db_name := config.Settings().DbName
 
+  if db_url == "" {
+    Log.Fatal("db_url not found")
+  }
+
   mongo, err := mgo.ParseURL(db_url)
-  // _, err := mgo.ParseURL(db_url)
 
   s, err := mgo.Dial(db_url)
 
@@ -31,9 +37,9 @@ func Connect() {
 
   s.SetSafe(&mgo.Safe{})
 
-  // log.Info("A walrus appears")
-
-  // fmt.Println("Connected to mongo", db_url)
+  Log.WithFields(logrus.Fields{
+    "db_url": db_url,
+  }).Info("connect mongo")
 
   Session = s
   Mongo = mongo

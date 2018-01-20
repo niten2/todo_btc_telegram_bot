@@ -1,21 +1,36 @@
 package main
 
 import (
-  "fmt"
+  // "fmt"
+  "os"
   "testing"
-  "github.com/joho/godotenv"
-  "gopkg.in/h2non/gock.v1"
 
+  "gopkg.in/h2non/gock.v1"
   . "github.com/smartystreets/goconvey/convey"
 )
 
-func init() {
-  _ = godotenv.Load("./.env.test")
-}
-
 func TestMain(t *testing.T) {
+  os.Setenv("ENV", "test")
 
   Convey("should", t, func() {
+
+    defer gock.Off()
+
+    gock.New("https://api.telegram.org/(.*)").
+      Post("/getMe").
+      Reply(200).
+      BodyString(`
+        {
+          "ok": true,
+          "result": {
+            "id": 534094005,
+            "is_bot": true,
+            "first_name": "CoinInfo",
+            "username": "coint_info_bot"
+          }
+        }
+      `)
+
 
     // bot := bot_api.InitBot()
 
@@ -29,7 +44,7 @@ func TestMain(t *testing.T) {
     //   Reply(200).
     //   JSON(map[string]string{"user": "test"})
 
-    // main()
+    main()
 
     // Connect()
 
