@@ -2,13 +2,13 @@ package bot_api
 
 import (
   "fmt"
-  // "os"
-  "log"
-  // "strconv"
   "gopkg.in/telegram-bot-api.v4"
 
   "app-telegram/request"
   "app-telegram/config"
+
+  . "app-telegram/logger"
+  "github.com/sirupsen/logrus"
 )
 
 func InitBot() *tgbotapi.BotAPI {
@@ -16,12 +16,14 @@ func InitBot() *tgbotapi.BotAPI {
   bot, err := tgbotapi.NewBotAPI(telegram_token)
 
   if err != nil {
-    log.Panic(err)
+    Log.Fatal(err)
   }
 
   // bot.Debug = true
 
-  log.Printf("Authorized on account %s", bot.Self.UserName)
+  Log.WithFields(logrus.Fields{
+    "user": bot.Self.UserName,
+  }).Info("Authorized on account")
 
   return bot
 }
@@ -43,5 +45,7 @@ func SendMessage(bot *tgbotapi.BotAPI) {
 
   bot.Send(tgbotapi.NewMessage(user_id, message))
 
-  fmt.Println("bot send message user_id %s", user_id)
+  Log.WithFields(logrus.Fields{
+    "user_id": user_id,
+  }).Info("Authorized on account")
 }

@@ -1,17 +1,22 @@
 package bot_api
 
-import (
-  // "fmt"
-  "testing"
-  . "github.com/smartystreets/goconvey/convey"
-)
+// import (
+//   // "fmt"
+//   "testing"
+//   "github.com/joho/godotenv"
+//   . "github.com/smartystreets/goconvey/convey"
+// )
 
-func TestActions(t *testing.T) {
+// func init() {
+//   _ = godotenv.Load("../.env.test")
+// }
 
-  Convey("should ", t, func() {
-    res := CreateResponse("p BTC SBD 0.000020")
+// func TestActions(t *testing.T) {
 
-    So(res, ShouldEqual, "записал")
-  })
+//   Convey("should ", t, func() {
+//     res := CreateResponse("p BTC SBD 0.000020")
 
-}
+//     So(res, ShouldEqual, "записал")
+//   })
+
+// }

@@ -1,9 +1,11 @@
 package config
 
 import (
+  "fmt"
   "os"
   "strconv"
   "strings"
+  "github.com/joho/godotenv"
 )
 
 type Setting struct {
@@ -17,11 +19,30 @@ type Setting struct {
 }
 
 func Settings() Setting {
-  ScheduleEverySeconds, _ := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
+  if os.Getenv("ENV") == "test" {
+    _ = godotenv.Load("../.env.test")
+  } else {
+    _ = godotenv.Load("../.env")
+  }
 
-  DbName := strings.Split(os.Getenv("DB_URL"), "/")[3]
+  ScheduleEverySeconds, err := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
 
-  TelegramUserId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+  if err != nil {
+    fmt.Println(err)
+  }
+
+  var DbName string
+  if os.Getenv("DB_URL") == "" {
+    fmt.Println("env DB_URL not found")
+  } else {
+    DbName = strings.Split(os.Getenv("DB_URL"), "/")[3]
+  }
+
+  TelegramUserId, err := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+
+  if err != nil {
+    fmt.Println(err)
+  }
 
   return Setting{
     Env: os.Getenv("ENV"),

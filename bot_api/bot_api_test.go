@@ -2,18 +2,15 @@ package bot_api
 
 import (
   // "fmt"
+  "os"
   "testing"
-  "github.com/joho/godotenv"
   . "github.com/smartystreets/goconvey/convey"
-
   "gopkg.in/h2non/gock.v1"
 )
 
-func init() {
-  _ = godotenv.Load("../.env")
-}
-
 func TestBotApi(t *testing.T) {
+  os.Setenv("ENV", "test")
+
   Convey("should run InitBot", t, func() {
     defer gock.Off()
 
