@@ -2,15 +2,17 @@ package bot_api
 
 import (
   "fmt"
-  "os"
+  // "os"
   "log"
+  // "strconv"
   "gopkg.in/telegram-bot-api.v4"
-  "strconv"
+
   "app-telegram/request"
+  "app-telegram/config"
 )
 
 func InitBot() *tgbotapi.BotAPI {
-  telegram_token := os.Getenv("TELEGRAM_TOKEN")
+  telegram_token := config.Settings().TelegramToken
   bot, err := tgbotapi.NewBotAPI(telegram_token)
 
   if err != nil {
@@ -35,7 +37,8 @@ func CreateMessage() string {
 }
 
 func SendMessage(bot *tgbotapi.BotAPI) {
-  user_id, _ := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+  user_id := config.Settings().TelegramUserId
+
   message := CreateMessage()
 
   bot.Send(tgbotapi.NewMessage(user_id, message))

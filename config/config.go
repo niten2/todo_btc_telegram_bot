@@ -2,22 +2,18 @@ package config
 
 import (
   "os"
-  "github.com/joho/godotenv"
   "strconv"
   "strings"
 )
 
 type Setting struct {
+  Env string
   DbUrl string
   DbName string
   TelegramToken string
-  TelegramUserId string
+  TelegramUserId int64
   WalletId string
   ScheduleEverySeconds bool
-}
-
-func init() {
-  _ = godotenv.Load()
 }
 
 func Settings() Setting {
@@ -25,11 +21,14 @@ func Settings() Setting {
 
   DbName := strings.Split(os.Getenv("DB_URL"), "/")[3]
 
+  TelegramUserId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+
   return Setting{
+    Env: os.Getenv("ENV"),
     DbUrl: os.Getenv("DB_URL"),
     DbName: DbName,
     TelegramToken: os.Getenv("TELEGRAM_TOKEN"),
-    TelegramUserId: os.Getenv("TELEGRAM_USER_ID"),
+    TelegramUserId: TelegramUserId,
     WalletId: os.Getenv("WALLET_ID"),
     ScheduleEverySeconds: ScheduleEverySeconds,
   }

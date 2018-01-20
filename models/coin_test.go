@@ -55,4 +55,13 @@ func TestCoin(t *testing.T) {
   //   So(coins, ShouldNotBeNil)
   // })
 
+  Convey("UpdateCoinsPoloniex", t, func() {
+    // var values []Coin
+    // values = append(values, Coin{Name: "BTC_BCN", Value: "0.00000066"})
+    // values = append(values, Coin{Name: "BTC_BELA", Value: "0.00003236"})
+
+    UpdateCoinsPoloniex()
+
+    // So(coins, ShouldNotBeNil)
+  })
 }

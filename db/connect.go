@@ -5,6 +5,8 @@ import (
   // "os"
   "gopkg.in/mgo.v2"
   "app-telegram/config"
+
+  // log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -28,6 +30,8 @@ func Connect() {
   }
 
   s.SetSafe(&mgo.Safe{})
+
+  // log.Info("A walrus appears")
 
   // fmt.Println("Connected to mongo", db_url)
 
