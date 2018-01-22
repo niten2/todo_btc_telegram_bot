@@ -11,24 +11,17 @@ import (
 var Log = logrus.New()
 
 func getLogger() {
-  // env := config.Settings().Env
-  // fmt.Println(env)
-  fmt.Println(config.Settings())
+  env := config.Settings().Env
 
+  if (env == "test") {
+    Log.Out = os.Stdout
+    return
+  } else {
+    file, err := os.OpenFile("logrus.log", os.O_CREATE | os.O_WRONLY, 0666)
 
-  Log.Out = os.Stdout
-
-
-
-  // if (env == "test") {
-  //   Log.Out = os.Stdout
-  //   return
-  // } else {
-  //   file, err := os.OpenFile("logrus.log", os.O_CREATE | os.O_WRONLY, 0666)
-
-  //   if err == nil {
-
-  //     Log.Out = file
-  //   }
-  // }
+    if err == nil {
+      fmt.Println(err)
+      Log.Out = file
+    }
+  }
 }

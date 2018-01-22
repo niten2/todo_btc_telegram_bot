@@ -13,7 +13,7 @@ import (
 
 type PoloniexCoin struct {
   Name string
-  Last string `json:"last"`
+  Last float64 `json:"last"`
 }
 
 func PoloniexRequest() (map[string]PoloniexCoin, error) {

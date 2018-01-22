@@ -2,9 +2,13 @@ package bot_api
 
 import (
   "fmt"
-  "log"
-  "gopkg.in/telegram-bot-api.v4"
   "regexp"
+  "gopkg.in/telegram-bot-api.v4"
+
+  "app-telegram/logger"
+  "github.com/sirupsen/logrus"
+
+  "app-telegram/models"
 )
 
 func InitActions (bot *tgbotapi.BotAPI) {
@@ -16,7 +20,7 @@ func InitActions (bot *tgbotapi.BotAPI) {
   updates, err := bot.GetUpdatesChan(u)
 
   if err != nil {
-    log.Panic(err)
+    logger.Log.Fatal(err)
   }
 
   for update := range updates {
@@ -25,36 +29,63 @@ func InitActions (bot *tgbotapi.BotAPI) {
     }
 
     user_name := update.Message.From.UserName
-    chat_id := update.Message.Chat.ID
+    id_telegram := update.Message.Chat.ID
     text := update.Message.Text
 
-    log.Printf("[%s] %s", user_name, text, chat_id)
+    logger.Log.WithFields(logrus.Fields{
+      "user_name": user_name,
+      "text": text,
+      "id_telegram": id_telegram,
+    }).Info("user send message")
 
-    message := CreateResponse(text)
-    response := tgbotapi.NewMessage(chat_id, message)
+    message := CreateResponse(text, id_telegram)
+    response := tgbotapi.NewMessage(id_telegram, message)
 
     bot.Send(response)
   }
 }
 
-func CreateResponse(input string) string {
+func CreateResponse(input string, id_telegram int64) string {
     var msg string
 
-    res, _ := regexp.MatchString("^p ", input)
-
-    if res {
-      msg = "записал"
-      return msg
-    }
-
-    switch input {
-      case "/help":
+    switch {
+      case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
+        msg = CreateAlert(input, id_telegram)
+      case regexp.MustCompile("^plist").MatchString(input):
+        msg = models.CreatePoloniexCoinList()
+      case regexp.MustCompile("/help").MatchString(input):
         msg = "описание о боте"
-      case "/settings":
+      case regexp.MustCompile("/settings").MatchString(input):
         msg = "описание настроек"
       default:
         msg = "команда непонятна"
     }
 
     return msg
+}
+
+func CreateAlert(input string, id_telegram int64) string {
+  user, err := models.FindByIdTelegramm(id_telegram)
+
+  if err != nil {
+    user = models.NewUser("name", id_telegram)
+    user.Create()
+  }
+
+  alert, err := models.NewAlert(input)
+
+  if err != nil {
+    logger.Log.Warn(err)
+    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+  }
+
+  user.Alerts = append(user.Alerts, alert)
+  err = user.Save()
+
+  if err != nil {
+    logger.Log.Warn(err)
+    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+  }
+
+  return "ok"
 }

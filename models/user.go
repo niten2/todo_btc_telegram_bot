@@ -2,120 +2,102 @@ package models
 
 import (
   // "fmt"
+
   // "gopkg.in/mgo.v2"
   // "crypto/sha256"
   "gopkg.in/mgo.v2/bson"
+  // "encoding/json"
+
   "app-telegram/db"
+  // "app-telegram/logger"
 )
 
 type User struct {
-  // ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
-  ID string `json:"id" bson:"_id,omitempty"`
-  IdTelegramm string `json:"id_telegramm"`
-  Name string `json:"name"`
+  ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
+  Name string `json:"name" bson:"name"`
+  IdTelegramm int64 `json:"id_telegramm" bson:"id_telegramm"`
+  Alerts []Alert `json:"alerts" bson:"alerts"`
 }
 
-func (u *User) AsMap() map[string]string {
-  user := make(map[string]string)
 
-  user["id"] = u.ID
-  user["id_telegramm"] = u.IdTelegramm
+func (u *User) Create() error {
+  user_collection := db.Db.C("users")
+  err := user_collection.Insert(u)
+
+  return err
+}
+
+func (u *User) Save() error {
+  user_collection := db.Db.C("users")
+
+	change := bson.M{
+    "$set": bson.M{
+      "name": u.Name,
+      "id_telegramm": u.IdTelegramm,
+      "alerts": u.Alerts,
+    },
+  }
+
+  err := user_collection.Update(bson.M{"_id": u.ID}, change)
+
+  return err
+}
+
+func NewUser(name string, id_telegramm int64) User {
+  return User{
+    ID: bson.NewObjectId(),
+    Name: name,
+    IdTelegramm: id_telegramm,
+  }
+}
+
+func CreateUser(name string, id_telegramm int64) User {
+  user := User{
+    ID: bson.NewObjectId(),
+    Name: name,
+    IdTelegramm: id_telegramm,
+  }
+
+  user.Create()
 
   return user
 }
 
-func CreateUser(Name string, IdTelegramm string) User {
+// NOTE find
+func FindUserById(id string) (User, error) {
   user_collection := db.Db.C("users")
 
-  user_document := User{Name: Name, IdTelegramm: IdTelegramm}
+  user := User{}
+  err := user_collection.Find(bson.M{"_id": id}).One(&user)
 
-  user_collection.Insert(user_document)
+  if err != nil {
+    return user, err
+  }
 
-  return user_document
+  return user, nil
 }
 
-func FindUser(Name string) User {
+func FindUserByName(Name string) (User, error) {
   user_collection := db.Db.C("users")
 
   user := User{}
   err := user_collection.Find(bson.M{"name": Name}).One(&user)
 
   if err != nil {
-    panic(err.Error())
+    return user, err
   }
 
-  return user
+  return user, nil
 }
 
-// func UserLogin(email string, password string) (user *User, err error) {
-//   user = &User{}
-//   encryptedPassword := userEncrypedPassword(password)
-//   db := db.Conn.Where("email = ? AND encrypted_password = ?", email, encryptedPassword).First(user).Scan(user)
-//   err = db.Error
-//   if err != nil {
-//     return nil, err
-//   }
-//   return
-// }
+func FindByIdTelegramm(id_telegramm int64) (User, error) {
+  user_collection := db.Db.C("users")
+  user := User{}
+  err := user_collection.Find(bson.M{"id_telegramm": id_telegramm}).One(&user)
 
-// func userEncrypedPassword(password string) (encryptedPassword string) {
-//   saltedPassword := fmt.Sprintf("%s_%s", password, beego.AppConfig.String("salt"))
-//   encryptedPassword = fmt.Sprintf("%x", sha256.Sum256([]byte(saltedPassword)))
-//   return
-// }
+  if err != nil {
+    return user, err
+  }
 
-// func AllUsers() (users []*User, err error) {
-//   res := db.Conn.Debug().Order("first_name asc, last_name asc").Find(&users)
-//   err = res.Error
-//   if err != nil {
-//     beego.BeeLogger.Error("Error finding users: %v", res.Error.Error())
-//   }
-//   return
-// }
-
-// func FindUser(id string) (*User, error) {
-//   user := &User{ID: id}
-//   res := db.Conn.Debug().First(&user, "id=?", id)
-//   err := res.Error
-//   if err != nil {
-//     beego.BeeLogger.Error("Error finding user with id %s: %v", id, res.Error.Error())
-//   }
-//   return user, err
-// }
-
-// func CreateUser(firstName string, lastName string, email string, password string) (*User, error) {
-//   user := &User{FirstName: firstName, LastName: lastName, Email: email, EncryptedPassword: userEncrypedPassword(password)}
-//   res := db.Conn.Debug().Create(user)
-//   err := res.Error
-//   return user, err
-// }
-
-// func UpdateUser(id string, firstName *string, lastName *string, email *string, password *string) (*User, error) {
-//   user := &User{}
-//   res := db.Conn.Debug().First(user, "id=?", id)
-//   if res.Error != nil {
-//     beego.BeeLogger.Error("Error finding user with id %s: %v", id, res.Error.Error())
-//   }
-//   if firstName != nil {
-//     user.FirstName = *firstName
-//   }
-//   if lastName != nil {
-//     user.LastName = *lastName
-//   }
-//   if email != nil {
-//     user.Email = *email
-//   }
-//   if password != nil {
-//     user.EncryptedPassword = userEncrypedPassword(*password)
-//   }
-//   res = db.Conn.Debug().Save(user)
-//   err := res.Error
-//   return user, err
-// }
-
-// func DeleteUser(id string) (User, error) {
-//   user := User{ID: id}
-//   res := db.Conn.Debug().Delete(&user)
-//   err := res.Error
-//   return user, err
-// }
+  return user, nil
+}

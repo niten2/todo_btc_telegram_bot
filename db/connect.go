@@ -2,14 +2,16 @@ package db
 
 import (
   "fmt"
+
+  // "log"
   // "os"
+
   "gopkg.in/mgo.v2"
-  "app-telegram/config"
 
   . "app-telegram/logger"
   "github.com/sirupsen/logrus"
 
-  // log "github.com/sirupsen/logrus"
+  "app-telegram/config"
 )
 
 var (

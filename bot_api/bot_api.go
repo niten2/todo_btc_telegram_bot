@@ -47,5 +47,6 @@ func SendMessage(bot *tgbotapi.BotAPI) {
 
   Log.WithFields(logrus.Fields{
     "user_id": user_id,
-  }).Info("Authorized on account")
+    "message": message,
+  }).Info("send message")
 }
