@@ -11,6 +11,10 @@ import (
   "app-telegram/db"
 )
 
+func SetupEnv() {
+  os.Setenv("ENV", "test")
+}
+
 func Setup() {
   os.Setenv("ENV", "test")
 

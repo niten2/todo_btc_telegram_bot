@@ -2,6 +2,7 @@ package config
 
 import (
   "fmt"
+
   "os"
   "strconv"
   "strings"
@@ -25,7 +26,13 @@ func Settings() Setting {
     err := godotenv.Load("../.env.test")
 
     if err != nil {
-      panic(err)
+      err = godotenv.Load(".env.test")
+
+      fmt.Println(111)
+
+      if err != nil {
+        panic(err)
+      }
     }
   } else {
     err := godotenv.Load()

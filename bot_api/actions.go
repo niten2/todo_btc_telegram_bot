@@ -2,6 +2,8 @@ package bot_api
 
 import (
   "fmt"
+
+  "os"
   "regexp"
   "gopkg.in/telegram-bot-api.v4"
 
@@ -9,6 +11,7 @@ import (
   "github.com/sirupsen/logrus"
 
   "app-telegram/models"
+  "app-telegram/config"
 )
 
 func InitActions (bot *tgbotapi.BotAPI) {
@@ -21,6 +24,11 @@ func InitActions (bot *tgbotapi.BotAPI) {
 
   if err != nil {
     logger.Log.Fatal(err)
+  }
+
+  // NOTE for testing
+  if config.Settings().Env == "test" {
+    os.Exit(0)
   }
 
   for update := range updates {
@@ -42,6 +50,7 @@ func InitActions (bot *tgbotapi.BotAPI) {
     response := tgbotapi.NewMessage(id_telegram, message)
 
     bot.Send(response)
+
   }
 }
 

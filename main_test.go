@@ -46,6 +46,7 @@ func TestMain(t *testing.T) {
 
     main()
 
+    os.Exit(0)
     // Connect()
 
     // So(Db, ShouldNotBeNil)

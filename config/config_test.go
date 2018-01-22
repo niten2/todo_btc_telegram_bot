@@ -2,18 +2,17 @@ package config
 
 import (
   // "fmt"
+
 	"testing"
   "os"
-  "github.com/joho/godotenv"
   "strconv"
   . "github.com/smartystreets/goconvey/convey"
+
 )
 
-func init() {
-  _ = godotenv.Load("../.env.test")
-}
 
 func TestSettings(t *testing.T) {
+  os.Setenv("ENV", "test")
 
   Convey("should return balance", t, func() {
     res := Settings()
