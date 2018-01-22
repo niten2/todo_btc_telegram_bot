@@ -68,7 +68,8 @@ func FindUserById(id string) (User, error) {
   user_collection := db.Db.C("users")
 
   user := User{}
-  err := user_collection.Find(bson.M{"_id": id}).One(&user)
+
+  err := user_collection.Find(bson.M{"_id": bson.ObjectId(id)}).One(&user)
 
   if err != nil {
     return user, err

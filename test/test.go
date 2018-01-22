@@ -18,7 +18,7 @@ func Setup() {
   db.Db.DropDatabase()
 }
 
-func SetDebug() {
+func SetDebugDb() {
   mgo.SetDebug(true)
   var aLogger *log.Logger
   aLogger = log.New(os.Stderr, "", log.LstdFlags)
