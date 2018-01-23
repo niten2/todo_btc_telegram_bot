@@ -36,14 +36,10 @@ func TestCreateAlert(t *testing.T) {
     id_telegram = 123
 
     res := CreateAlert("p SBD > 0.000020", id_telegram)
-    fmt.Println(11111)
-
-
-    user, _ := models.FindByIdTelegramm(id_telegram)
+    user, _ := models.FindUserByIdTelegramm(id_telegram)
 
 
     fmt.Println(999, user.Alerts)
-
 
     So(res, ShouldEqual, "ok")
   })

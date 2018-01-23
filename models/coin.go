@@ -18,15 +18,7 @@ import (
 type Coin struct {
   ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
   Name string `json:"name" bson:"name"`
-  Value string `json:"value" bson:"value"`
-}
-
-func (c *Coin) New (name string, value float64) Coin {
-  return Coin{
-    ID: bson.NewObjectId(),
-    Name: name,
-    Value: value,
-  }
+  Value float64 `json:"value" bson:"value"`
 }
 
 func (c *Coin) Create() error {
@@ -47,12 +39,12 @@ func (c *Coin) Save() error {
     },
   }
 
-  err := coin_collection.Update(bson.M{"_id": u.ID}, change)
+  err := coin_collection.Update(bson.M{"_id": c.ID}, change)
 
   return err
 }
 
-func (c *Coin) FindAll() []Coin {
+func FindCoinAll() ([]Coin, error) {
   var coins []Coin
 
   coin_collection := db.Db.C("coins")
@@ -66,41 +58,27 @@ func (c *Coin) FindAll() []Coin {
   return coins, nil
 }
 
-func (c *Coin) FindByName(name string) (Coin, error) {
-  coin_collection := db.Db.C("coins")
-
-  coin := Coin{}
-  err := coin_collection.Find(bson.M{"name": name}).One(&coin)
-
-  if err != nil {
-    return nil, err
+func NewCoin (name string, value float64) Coin {
+  return Coin{
+    ID: bson.NewObjectId(),
+    Name: name,
+    Value: value,
   }
-
-  return coin, nil
 }
 
-func CreatePoloniexCoinList(coins Coin) string {
-  res := "poliniex list \n"
-
-  for _, coin := range coins {
-    res = res + fmt.Sprintf("%s %s \n", coin.Name, coin.Value)
-  }
-
-  return res
-}
-
-func (c *Coin) Fetch() (error) {
-  json, err := request.PoloniexRequest()
+func FetchCoin() (error) {
+  resp, err := request.RequestPoloniex()
 
   if err != nil {
     return err
   }
 
-  for k, v := range json {
-    coin, err := Coin.FindByName(v["name"])
+  for _, v := range resp {
+    coin, err := FindCoinByName(v.Name)
 
-    if (err) {
-      coin := Coin.New(v["name"], v["last"])
+    if err != nil {
+      coin := NewCoin(v.Name, v.Value)
+
       err := coin.Create()
 
       if err != nil {
@@ -110,13 +88,36 @@ func (c *Coin) Fetch() (error) {
       return nil
     }
 
-    coin.Value = v["last"]
+    coin.Value = v.Value
     coin.Save()
 
     return nil
   }
 
   return nil
+}
+
+func FindCoinByName(name string) (Coin, error) {
+  coin_collection := db.Db.C("coins")
+
+  coin := Coin{}
+  err := coin_collection.Find(bson.M{"name": name}).One(&coin)
+
+  if err != nil {
+    return coin, err
+  }
+
+  return coin, nil
+}
+
+func CreatePoloniexCoinList(coins []Coin) string {
+  res := "poliniex list \n"
+
+  for _, coin := range coins {
+    res = res + fmt.Sprintf("%s %s \n", coin.Name, coin.Value)
+  }
+
+  return res
 }
 
 

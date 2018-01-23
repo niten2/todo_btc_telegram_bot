@@ -91,7 +91,7 @@ func FindUserByName(Name string) (User, error) {
   return user, nil
 }
 
-func FindByIdTelegramm(id_telegramm int64) (User, error) {
+func FindUserByIdTelegramm(id_telegramm int64) (User, error) {
   user_collection := db.Db.C("users")
   user := User{}
   err := user_collection.Find(bson.M{"id_telegramm": id_telegramm}).One(&user)

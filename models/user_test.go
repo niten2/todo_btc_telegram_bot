@@ -62,10 +62,10 @@ func TestUser(t *testing.T) {
     So(user, ShouldNotBeNil)
   })
 
-  Convey("FindByIdTelegramm", t, func() {
+  Convey("FindUserByIdTelegramm", t, func() {
     user := NewUser("test", 123)
     user.Create()
-    user, _ = FindByIdTelegramm(123)
+    user, _ = FindUserByIdTelegramm(123)
     So(user, ShouldNotBeNil)
   })
 

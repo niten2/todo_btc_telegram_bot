@@ -74,7 +74,7 @@ func CreateResponse(input string, id_telegram int64) string {
 }
 
 func CreateAlert(input string, id_telegram int64) string {
-  user, err := models.FindByIdTelegramm(id_telegram)
+  user, err := models.FindUserByIdTelegramm(id_telegram)
 
   if err != nil {
     user = models.NewUser("name", id_telegram)
@@ -100,12 +100,12 @@ func CreateAlert(input string, id_telegram int64) string {
 }
 
 func CreatePoloniexCoinList() string {
-  coins, err := models.Coin.FindAll()
+  coins, err := models.FindCoinAll()
 
   if err != nil {
     logger.Log.Warn(err)
     return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
   }
 
-  return models.CreatePoloniexCoinList(coind)
+  return models.CreatePoloniexCoinList(coins)
 }

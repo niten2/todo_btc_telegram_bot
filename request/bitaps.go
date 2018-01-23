@@ -46,4 +46,3 @@ func GetBitapsBalanceWallet() int {
 
   return res.Balance
 }
-
