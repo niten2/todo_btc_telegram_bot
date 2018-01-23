@@ -22,7 +22,7 @@ func TestUser(t *testing.T) {
   })
 
   Convey("Save", t, func() {
-    user := CreateUser("test", 123)
+    user, _ := CreateUser("test", 123)
     alert, _ := NewAlert("p SBD > 0.000020")
 
     user.Alerts = append(user.Alerts, alert)
