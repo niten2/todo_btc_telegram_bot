@@ -2,7 +2,9 @@ package models
 
 import (
   "fmt"
+
   // "log"
+
   // "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
 
@@ -14,62 +16,43 @@ import (
 )
 
 type Coin struct {
-  ID string `json:"id" bson:"_id,omitempty"`
-  Name string `json:"name"`
-  Value float64 `json:"value"`
+  ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
+  Name string `json:"name" bson:"name"`
+  Value string `json:"value" bson:"value"`
 }
 
-func CreateCoin(Name string, Value float64) Coin {
+func (c *Coin) New (name string, value float64) Coin {
+  return Coin{
+    ID: bson.NewObjectId(),
+    Name: name,
+    Value: value,
+  }
+}
+
+func (c *Coin) Create() error {
   coin_collection := db.Db.C("coins")
 
-  coin_document := Coin{Name: Name, Value: Value}
+  err := coin_collection.Insert(c)
 
-  coin_collection.Insert(coin_document)
-
-  return coin_document
+  return err
 }
 
-// func CreateCoins(Coins []Coin) []Coin {
-//   for _, coin := range Coins {
-//     CreateCoin(coin.Name, coin.Value)
-//   }
-
-//   return Coins
-// }
-
-func BuildCoins(Coins map[string]request.PoloniexCoin) []Coin {
-  var coins []Coin
-
-  for k, v := range Coins {
-    coin := Coin{Name: k, Value: v.Last}
-    coins = append(coins, coin)
-  }
-
-  return coins
-}
-
-func FindCoin(Name string) Coin {
+func (c *Coin) Save() error {
   coin_collection := db.Db.C("coins")
 
-  coin := Coin{}
-  err := coin_collection.Find(bson.M{"name": Name}).One(&coin)
-
-  if err != nil {
-    panic(err.Error())
+	change := bson.M{
+    "$set": bson.M{
+      "name": c.Name,
+      "value": c.Value,
+    },
   }
 
-  return coin
+  err := coin_collection.Update(bson.M{"_id": u.ID}, change)
+
+  return err
 }
 
-// func UpdateCoinsPoloniex() {
-//   // db, session := db.Connect()
-//   // defer session.Close()
-
-//   // CreateCoins(db, BuildCoins(db, request.PoloniexRequest()))
-//   log.Printf("coins update")
-// }
-
-func CreatePoloniexCoinList() string {
+func (c *Coin) FindAll() []Coin {
   var coins []Coin
 
   coin_collection := db.Db.C("coins")
@@ -77,9 +60,26 @@ func CreatePoloniexCoinList() string {
   err := coin_collection.Find(nil).All(&coins)
 
   if err != nil {
-    fmt.Println(err)
+    return nil, err
   }
 
+  return coins, nil
+}
+
+func (c *Coin) FindByName(name string) (Coin, error) {
+  coin_collection := db.Db.C("coins")
+
+  coin := Coin{}
+  err := coin_collection.Find(bson.M{"name": name}).One(&coin)
+
+  if err != nil {
+    return nil, err
+  }
+
+  return coin, nil
+}
+
+func CreatePoloniexCoinList(coins Coin) string {
   res := "poliniex list \n"
 
   for _, coin := range coins {
@@ -89,6 +89,75 @@ func CreatePoloniexCoinList() string {
   return res
 }
 
+func (c *Coin) Fetch() (error) {
+  json, err := request.PoloniexRequest()
+
+  if err != nil {
+    return err
+  }
+
+  for k, v := range json {
+    coin, err := Coin.FindByName(v["name"])
+
+    if (err) {
+      coin := Coin.New(v["name"], v["last"])
+      err := coin.Create()
+
+      if err != nil {
+        return err
+      }
+
+      return nil
+    }
+
+    coin.Value = v["last"]
+    coin.Save()
+
+    return nil
+  }
+
+  return nil
+}
+
+
+
+// func CreateCoin(Name string, Value float64) Coin {
+//   coin_collection := db.Db.C("coins")
+
+//   coin_document := Coin{Name: Name, Value: Value}
+
+//   coin_collection.Insert(coin_document)
+
+//   return coin_document
+// }
+
+// func CreateCoins(Coins []Coin) []Coin {
+//   for _, coin := range Coins {
+//     CreateCoin(coin.Name, coin.Value)
+//   }
+
+//   return Coins
+// }
+
+// func BuildCoins(Coins map[string]request.PoloniexCoin) []Coin {
+//   var coins []Coin
+
+//   for k, v := range Coins {
+//     coin := Coin{Name: k, Value: v.Last}
+//     coins = append(coins, coin)
+//   }
+
+//   return coins
+// }
+
+
+// func UpdateCoinsPoloniex() {
+//   // db, session := db.Connect()
+//   // defer session.Close()
+
+//   // CreateCoins(db, BuildCoins(db, request.PoloniexRequest()))
+//   log.Printf("coins update")
+// }
 
 
 // func CreatePoloniexAlert(input string) string {

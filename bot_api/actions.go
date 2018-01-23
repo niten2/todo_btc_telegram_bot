@@ -61,7 +61,7 @@ func CreateResponse(input string, id_telegram int64) string {
       case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
         msg = CreateAlert(input, id_telegram)
       case regexp.MustCompile("^plist").MatchString(input):
-        msg = models.CreatePoloniexCoinList()
+        msg = CreatePoloniexCoinList()
       case regexp.MustCompile("/help").MatchString(input):
         msg = "описание о боте"
       case regexp.MustCompile("/settings").MatchString(input):
@@ -97,4 +97,15 @@ func CreateAlert(input string, id_telegram int64) string {
   }
 
   return "ok"
+}
+
+func CreatePoloniexCoinList() string {
+  coins, err := models.Coin.FindAll()
+
+  if err != nil {
+    logger.Log.Warn(err)
+    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+  }
+
+  return models.CreatePoloniexCoinList(coind)
 }

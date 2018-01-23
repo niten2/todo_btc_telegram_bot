@@ -1,28 +1,34 @@
 package request
 
 import (
-  "fmt"
+  // "fmt"
+
 	// "log"
+  // "os"
   "net/http"
   "encoding/json"
   "io/ioutil"
+
   // "app-telegram/models"
 
-  // "os"
+  "strconv"
 )
 
-type PoloniexCoin struct {
+type CoinPoloniex struct {
   Name string
-  Last float64 `json:"last"`
+  Value float64 `json:"last"`
 }
 
-func PoloniexRequest() (map[string]PoloniexCoin, error) {
+func RequestPoloniex() ([]CoinPoloniex, error) {
   url_poloniex := "https://poloniex.com/public?command=returnTicker"
+
+	var coins map[string]interface{}
+  var result []CoinPoloniex
 
   res, err := http.Get(url_poloniex)
 
 	if err != nil {
-    fmt.Println("error", err)
+    return nil, err
 	}
 
   defer res.Body.Close()
@@ -30,13 +36,25 @@ func PoloniexRequest() (map[string]PoloniexCoin, error) {
   body, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-    fmt.Println("error", err)
     return nil, err
 	}
 
-	var coins map[string]PoloniexCoin
-
 	json.Unmarshal(body, &coins)
 
-  return coins, nil
+  for v, k := range coins {
+    last := k.(map[string]interface{})["last"].(string)
+    value, err := strconv.ParseFloat(last, 64)
+
+    if err != nil {
+      return nil, err
+    }
+
+    result = append(result, CoinPoloniex{
+      Name: v,
+      Value: value,
+    })
+  }
+
+  return result, nil
 }
+

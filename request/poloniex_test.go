@@ -2,14 +2,15 @@ package request
 
 import (
   // "fmt"
+
 	"gopkg.in/h2non/gock.v1"
 	"testing"
   . "github.com/smartystreets/goconvey/convey"
 )
 
-func TestMatchURL(t *testing.T) {
+func TestRequestPoloniex(t *testing.T) {
 
-  Convey("should return valid value", t, func() {
+  Convey("should return valid result", t, func() {
 
     body := `{
       "BTC_BCN": {
@@ -44,12 +45,16 @@ func TestMatchURL(t *testing.T) {
       Reply(200).
       BodyString(body)
 
-    res, _ := PoloniexRequest()
+    res, _ := RequestPoloniex()
 
-    coins := make(map[string]PoloniexCoin)
-    coins["BTC_BCN"] = PoloniexCoin{Last: "0.00000066"}
-    coins["BTC_BELA"] = PoloniexCoin{Last: "0.00003236"}
+    So(res, ShouldContain, CoinPoloniex{
+      Name: "BTC_BCN",
+      Value: 0.00000066,
+    })
 
-    So(res, ShouldResemble, coins)
+    So(res, ShouldContain, CoinPoloniex{
+      Name: "BTC_BELA",
+      Value: 0.00003236,
+    })
   })
 }
