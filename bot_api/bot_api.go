@@ -11,7 +11,9 @@ import (
   "github.com/sirupsen/logrus"
 )
 
-func InitBot() *tgbotapi.BotAPI {
+var Bot *tgbotapi.BotAPI
+
+func InitBot() {
   telegram_token := config.Settings().TelegramToken
   bot, err := tgbotapi.NewBotAPI(telegram_token)
 
@@ -25,7 +27,7 @@ func InitBot() *tgbotapi.BotAPI {
     "user": bot.Self.UserName,
   }).Info("Authorized on account")
 
-  return bot
+  Bot = bot
 }
 
 func CreateMessage() string {

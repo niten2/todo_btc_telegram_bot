@@ -16,13 +16,13 @@ import (
 
 const MessageError = "Что то пошло не так"
 
-func InitActions (bot *tgbotapi.BotAPI) {
+func InitActions () {
   fmt.Println("InitActions for bot")
 
   u := tgbotapi.NewUpdate(0)
   u.Timeout = 60
 
-  updates, err := bot.GetUpdatesChan(u)
+  updates, err := Bot.GetUpdatesChan(u)
 
   if err != nil {
     logger.Log.Fatal(err)
@@ -42,21 +42,7 @@ func InitActions (bot *tgbotapi.BotAPI) {
     id_telegram := update.Message.Chat.ID
     text := update.Message.Text
 
-    _, err := models.FindUserByIdTelegramm(id_telegram)
-
-    if err.Error() == "not found" {
-      logger.Log.WithFields(logrus.Fields{
-        "id_telegram": id_telegram,
-      }).Info("user create")
-
-      _, err := models.CreateUser(user_name, id_telegram)
-
-      if err != nil {
-        logger.Log.Warn(err)
-        SendResponseError(bot, id_telegram)
-        continue
-      }
-    }
+    _, _ = FindOrCreateUserByIdTelegram(id_telegram)
 
     logger.Log.WithFields(logrus.Fields{
       "user_name": user_name,
@@ -67,7 +53,7 @@ func InitActions (bot *tgbotapi.BotAPI) {
     message := CreateResponse(text, id_telegram)
     response := tgbotapi.NewMessage(id_telegram, message)
 
-    bot.Send(response)
+    Bot.Send(response)
   }
 }
 
@@ -91,7 +77,7 @@ func CreateResponse(input string, id_telegram int64) string {
 }
 
 func CreateAlert(input string, id_telegram int64) string {
-  user, err := models.FindUserByIdTelegramm(id_telegram)
+  user, err := models.FindUserByIdTelegram(id_telegram)
 
   if err != nil {
     user = models.NewUser("name", id_telegram)
@@ -127,8 +113,7 @@ func CreatePoloniexCoinList() string {
   return models.CreatePoloniexCoinList(coins)
 }
 
-func SendResponseError(bot *tgbotapi.BotAPI, id_telegram int64) {
+func SendResponseError(id_telegram int64) {
   response := tgbotapi.NewMessage(id_telegram, MessageError)
-  bot.Send(response)
+  Bot.Send(response)
 }
-

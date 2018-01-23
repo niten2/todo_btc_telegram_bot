@@ -59,11 +59,27 @@ func TestUser(t *testing.T) {
     So(user, ShouldNotBeNil)
   })
 
-  Convey("FindUserByIdTelegramm", t, func() {
+  Convey("FindUserByIdTelegram", t, func() {
     user := NewUser("test", 123)
     user.Create()
-    user, _ = FindUserByIdTelegramm(123)
+    user, _ = FindUserByIdTelegram(123)
     So(user, ShouldNotBeNil)
+  })
+
+  Convey("FindOrCreateUserByIdTelegram user not exist", t, func() {
+    user, _ := FindOrCreateUserByIdTelegram("test", 123)
+
+    So(user.Name, ShouldEqual, "test")
+    So(user.IdTelegram, ShouldEqual, 123)
+  })
+
+  Convey("FindOrCreateUserByIdTelegram user exist", t, func() {
+    _, _ = CreateUser("test", 123)
+
+    user, _ := FindOrCreateUserByIdTelegram("new", 123)
+
+    So(user.Name, ShouldEqual, "test")
+    So(user.IdTelegram, ShouldEqual, 123)
   })
 
 }

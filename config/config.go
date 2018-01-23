@@ -7,8 +7,6 @@ import (
   "strconv"
   "strings"
   "github.com/joho/godotenv"
-
-  // . "app-telegram/logger"
 )
 
 type Setting struct {
@@ -54,8 +52,6 @@ func Settings() Setting {
     fmt.Println(err)
   }
 
-  ScheduleEverySeconds, err := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
-
   if err != nil {
     fmt.Println(err)
   }
@@ -67,6 +63,5 @@ func Settings() Setting {
     TelegramToken: os.Getenv("TELEGRAM_TOKEN"),
     TelegramUserId: TelegramUserId,
     WalletId: os.Getenv("WALLET_ID"),
-    ScheduleEverySeconds: ScheduleEverySeconds,
   }
 }

@@ -3,19 +3,15 @@ package models
 import (
   // "fmt"
 
-  // "gopkg.in/mgo.v2"
-  // "crypto/sha256"
   "gopkg.in/mgo.v2/bson"
-  // "encoding/json"
 
   "app-telegram/db"
-  // "app-telegram/logger"
 )
 
 type User struct {
   ID bson.ObjectId `json:"id" bson:"_id,omitempty"`
   Name string `json:"name" bson:"name"`
-  IdTelegramm int64 `json:"id_telegramm" bson:"id_telegramm"`
+  IdTelegram int64 `json:"id_telegram" bson:"id_telegram"`
   Alerts []Alert `json:"alerts" bson:"alerts"`
 }
 
@@ -33,7 +29,7 @@ func (u *User) Save() error {
 	change := bson.M{
     "$set": bson.M{
       "name": u.Name,
-      "id_telegramm": u.IdTelegramm,
+      "id_telegram": u.IdTelegram,
       "alerts": u.Alerts,
     },
   }
@@ -43,19 +39,19 @@ func (u *User) Save() error {
   return err
 }
 
-func NewUser(name string, id_telegramm int64) User {
+func NewUser(name string, id_telegram int64) User {
   return User{
     ID: bson.NewObjectId(),
     Name: name,
-    IdTelegramm: id_telegramm,
+    IdTelegram: id_telegram,
   }
 }
 
-func CreateUser(name string, id_telegramm int64) (User, error) {
+func CreateUser(name string, id_telegram int64) (User, error) {
   user := User{
     ID: bson.NewObjectId(),
     Name: name,
-    IdTelegramm: id_telegramm,
+    IdTelegram: id_telegram,
   }
 
   err := user.Create()
@@ -91,14 +87,24 @@ func FindUserByName(Name string) (User, error) {
   return user, nil
 }
 
-func FindUserByIdTelegramm(id_telegramm int64) (User, error) {
+func FindUserByIdTelegram(id_telegram int64) (User, error) {
   user_collection := db.Db.C("users")
   user := User{}
-  err := user_collection.Find(bson.M{"id_telegramm": id_telegramm}).One(&user)
+  err := user_collection.Find(bson.M{"id_telegram": id_telegram}).One(&user)
 
   if err != nil {
     return user, err
   }
 
   return user, nil
+}
+
+func FindOrCreateUserByIdTelegram(user_name string, id_telegram int64) (User, error) {
+  user, err := FindUserByIdTelegram(id_telegram)
+
+  if err != nil && err.Error() == "not found" {
+    user, err = CreateUser(user_name, id_telegram)
+  }
+
+  return user, err
 }
