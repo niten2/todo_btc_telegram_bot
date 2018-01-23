@@ -3,13 +3,10 @@ package models
 import (
   // "fmt"
 
-  // "os"
   "testing"
   . "github.com/smartystreets/goconvey/convey"
 
   "app-telegram/test"
-  // . "app-telegram/request"
-  // "app-telegram/db"
 )
 
 

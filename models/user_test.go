@@ -3,23 +3,14 @@ package models
 import (
   // "fmt"
 
-  // "os"
   "testing"
   . "github.com/smartystreets/goconvey/convey"
 
   "app-telegram/test"
-  // "app-telegram/db"
-  // "app-telegram/types"
 )
 
 func TestUser(t *testing.T) {
   test.Setup()
-
-  Convey("NewUser", t, func() {
-    user := NewUser("test", 123)
-
-    So(user, ShouldNotBeNil)
-  })
 
   Convey("Create", t, func() {
     user := NewUser("test", 123)
@@ -46,6 +37,12 @@ func TestUser(t *testing.T) {
     So(name, ShouldEqual, "BTC_SBD")
     So(compare, ShouldEqual, ">")
     So(value, ShouldEqual, 2e-05)
+  })
+
+  Convey("NewUser", t, func() {
+    user := NewUser("test", 123)
+
+    So(user, ShouldNotBeNil)
   })
 
   Convey("FindUserById", t, func() {

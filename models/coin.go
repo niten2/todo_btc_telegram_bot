@@ -66,12 +66,26 @@ func NewCoin (name string, value float64) Coin {
   }
 }
 
+func CreateCoin(name string, value float64) (Coin, error) {
+  coin := Coin{
+    ID: bson.NewObjectId(),
+    Name: name,
+    Value: value,
+  }
+
+  err := coin.Create()
+
+  return coin, err
+}
+
 func FetchCoin() (error) {
   resp, err := request.RequestPoloniex()
 
   if err != nil {
     return err
   }
+
+  fmt.Println(len(resp))
 
   for _, v := range resp {
     coin, err := FindCoinByName(v.Name)
@@ -85,16 +99,24 @@ func FetchCoin() (error) {
         return err
       }
 
-      return nil
+    } else {
+      coin.Value = v.Value
+      coin.Save()
     }
-
-    coin.Value = v.Value
-    coin.Save()
-
-    return nil
   }
 
   return nil
+}
+
+// NOTE find
+func FindCoinById(id string) (Coin, error) {
+  coin_collection := db.Db.C("coins")
+
+  coin := Coin{}
+
+  err := coin_collection.Find(bson.M{"_id": bson.ObjectId(id)}).One(&coin)
+
+  return coin, err
 }
 
 func FindCoinByName(name string) (Coin, error) {
@@ -110,6 +132,7 @@ func FindCoinByName(name string) (Coin, error) {
   return coin, nil
 }
 
+// Actions
 func CreatePoloniexCoinList(coins []Coin) string {
   res := "poliniex list \n"
 
@@ -122,15 +145,6 @@ func CreatePoloniexCoinList(coins []Coin) string {
 
 
 
-// func CreateCoin(Name string, Value float64) Coin {
-//   coin_collection := db.Db.C("coins")
-
-//   coin_document := Coin{Name: Name, Value: Value}
-
-//   coin_collection.Insert(coin_document)
-
-//   return coin_document
-// }
 
 // func CreateCoins(Coins []Coin) []Coin {
 //   for _, coin := range Coins {

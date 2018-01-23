@@ -6,9 +6,12 @@ import (
 	"gopkg.in/h2non/gock.v1"
 	"testing"
   . "github.com/smartystreets/goconvey/convey"
+
+  "app-telegram/test"
 )
 
 func TestRequestPoloniex(t *testing.T) {
+  test.Setup()
 
   Convey("should return valid result", t, func() {
 

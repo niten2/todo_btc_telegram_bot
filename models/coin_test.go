@@ -3,12 +3,10 @@ package models
 import (
   // "fmt"
 
-  // "os"
   "testing"
   . "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/h2non/gock.v1"
 
-  // . "app-telegram/request"
-  // "app-telegram/db"
   "app-telegram/test"
 )
 
@@ -16,59 +14,85 @@ import (
 func TestCoin(t *testing.T) {
   test.Setup()
 
-  // Convey("CreateCoin", t, func() {
-  //   coin := CreateCoin("BTC_USDT", "0.00003")
+  Convey("Coin.Create()", t, func() {
+    coin := NewCoin("test", 123)
+    coin.Create()
 
-  //   So(coin, ShouldNotBeNil)
-  // })
+    coin, _ = FindCoinById(string(coin.ID))
 
-  // Convey("FindCoin", t, func() {
-  //   CreateCoin("BTC_USDT", "0.00003")
-  //   coin := FindCoin("BTC_USDT")
-
-  //   So(coin, ShouldNotBeNil)
-  // })
-
-  // Convey("BuildCoins", t, func() {
-  //   coins := make(map[string]PoloniexCoin)
-  //   coins["BTC_BCN"] = PoloniexCoin{Last: "0.00000066"}
-  //   coins["BTC_BELA"] = PoloniexCoin{Last: "0.00003236"}
-
-  //   res := BuildCoins(coins)
-
-  //   var values []Coin
-  //   values = append(values, Coin{Name: "BTC_BCN", Value: "0.00000066"})
-  //   values = append(values, Coin{Name: "BTC_BELA", Value: "0.00003236"})
-
-  //   So(res, ShouldResemble, values)
-  // })
-
-  // Convey("UpdateCoinsPoloniex", t, func() {
-  //   // var values []Coin
-  //   // values = append(values, Coin{Name: "BTC_BCN", Value: "0.00000066"})
-  //   // values = append(values, Coin{Name: "BTC_BELA", Value: "0.00003236"})
-
-  //   UpdateCoinsPoloniex()
-
-  //   // So(coins, ShouldNotBeNil)
-  // })
-
-  // Convey("CreatePoloniexCoinList", t, func() {
-  //   CreateCoin("BTC_USDT", "0.00003")
-  //   CreateCoin("BTC_XRP", "0.00001")
-
-  //   res := CreatePoloniexCoinList()
-
-  //   So(res, ShouldNotBeNil)
-  // })
-
-  Convey("CreatePoloniexAlert", t, func() {
-    // CreateCoin("BTC_SBD", 0.00003)
-
-    // alert := NewAlert("p SBD > 0.000020")
-
-    // res := CreatePoloniexAlert(alert)
-
-    // So(res, ShouldNotBeNil)
+    So(coin, ShouldNotBeNil)
   })
+
+  Convey("Coin.Save()", t, func() {
+    coin, _ := CreateCoin("test", 123)
+    coin, _ = FindCoinById(string(coin.ID))
+
+    So(coin.Name, ShouldEqual, "test")
+    So(coin.Value, ShouldEqual, 123)
+  })
+
+  Convey("NewCoin", t, func() {
+    coin := NewCoin("test", 123)
+
+    So(coin, ShouldNotBeNil)
+    So(coin.ID, ShouldNotBeNil)
+  })
+
+  Convey("FindCoinById", t, func() {
+    coin, _ := CreateCoin("test", 123)
+    coin, _ = FindCoinById(string(coin.ID))
+
+    So(coin, ShouldNotBeNil)
+  })
+
+  Convey("FindCoinByName", t, func() {
+    coin, _ := CreateCoin("test", 123)
+    coin, _ = FindCoinByName(string(coin.Name))
+
+    So(coin, ShouldNotBeNil)
+  })
+
+  Convey("FetchCoin", t, func() {
+    body := `{
+      "BTC_BCN": {
+        "id": 7,
+        "last": "0.00000066",
+        "lowestAsk": "0.00000067",
+        "highestBid": "0.00000066",
+        "percentChange": "-0.14285714",
+        "baseVolume": "222.79844664",
+        "quoteVolume": "317319368.28207934",
+        "isFrozen": "0",
+        "high24hr": "0.00000077",
+        "low24hr": "0.00000065"
+      },
+      "BTC_BELA": {
+        "id": 8,
+        "last": "0.00003236",
+        "lowestAsk": "0.00003239",
+        "highestBid": "0.00003200",
+        "percentChange": "-0.08094291",
+        "baseVolume": "18.80739029",
+        "quoteVolume": "570326.49484689",
+        "isFrozen": "0",
+        "high24hr": "0.00003586",
+        "low24hr": "0.00003200"
+      }
+    }`
+
+    defer gock.Disable()
+
+    gock.New("https://poloniex.com/public?command=returnTicker").
+      Reply(200).
+      BodyString(body)
+
+    _ = FetchCoin()
+
+    coin1, _ := FindCoinByName("BTC_BCN")
+    coin2, _ := FindCoinByName("BTC_BELA")
+
+    So(coin1, ShouldNotBeNil)
+    So(coin2, ShouldNotBeNil)
+  })
+
 }
