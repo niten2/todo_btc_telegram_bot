@@ -137,7 +137,7 @@ func CreatePoloniexCoinList(coins []Coin) string {
   res := "poliniex list \n"
 
   for _, coin := range coins {
-    res = res + fmt.Sprintf("%s %s \n", coin.Name, coin.Value)
+    res = res + fmt.Sprintf("%s %f \n", coin.Name, coin.Value)
   }
 
   return res
