@@ -40,15 +40,15 @@ func CreateMessage() string {
   `, usd, balance_wallet)
 }
 
-func SendMessage(bot *tgbotapi.BotAPI) {
-  user_id := config.Settings().TelegramUserId
+// func SendMessage(bot *tgbotapi.BotAPI) {
+//   user_id := config.Settings().TelegramUserId
 
-  message := CreateMessage()
+//   message := CreateMessage()
 
-  bot.Send(tgbotapi.NewMessage(user_id, message))
+//   bot.Send(tgbotapi.NewMessage(user_id, message))
 
-  Log.WithFields(logrus.Fields{
-    "user_id": user_id,
-    "message": message,
-  }).Info("send message")
-}
+//   Log.WithFields(logrus.Fields{
+//     "user_id": user_id,
+//     "message": message,
+//   }).Info("send message")
+// }

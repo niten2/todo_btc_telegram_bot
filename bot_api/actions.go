@@ -127,12 +127,10 @@ func SendResponseError(id_telegram int64) {
   Bot.Send(response)
 }
 
-
-
 // NOTE check coin
 func CheckCoin() {
   models.FetchCoin()
-  models.CheckUserAlert()
+  CheckUsersAlert()
 }
 
 func CheckUsersAlert() {
@@ -143,33 +141,14 @@ func CheckUsersAlert() {
   }
 
   for _, user := range users {
-    CheckUserAlert(user)
-  }
-}
-
-func CheckUserAlert(user User) {
-  for _, alert := range user.Alerts {
-
-    coin, err := FindCoinByName(alert.Name)
+    message, err := user.CheckAndRemoveUserAlert()
 
     if err != nil {
       logger.Log.Warn(err)
     }
 
-    var res bool
-
-    if (alert.Compare == ">") {
-      res = alert.Value > coin.Value
-    }
-
-    if (alert.Compare == "<") {
-      res = alert.Value < coin.Value
-    }
-
-    if res {
-      message := fmt.Sprintf("%s %s %s %s", alert.Name, alert.Value, alert.Compare, coin.Value)
-      bot_api.SendMessage(user.IdTelegram, message)
-      RemoveAlert(user, alert)
+    if message != "" {
+      SendMessage(user.IdTelegram, message)
     }
   }
 }

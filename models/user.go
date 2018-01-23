@@ -1,7 +1,7 @@
 package models
 
 import (
-  // "fmt"
+  "fmt"
 
   "gopkg.in/mgo.v2/bson"
 
@@ -15,7 +15,6 @@ type User struct {
   IdTelegram int64 `json:"id_telegram" bson:"id_telegram"`
   Alerts []Alert `json:"alerts" bson:"alerts"`
 }
-
 
 func (u *User) Create() error {
   user_collection := db.Db.C("users")
@@ -38,6 +37,66 @@ func (u *User) Save() error {
   err := user_collection.Update(bson.M{"_id": u.ID}, change)
 
   return err
+}
+
+func (user *User) AddAlert(input string) error {
+  alert, err := NewAlert(input)
+
+  if err != nil {
+    return err
+  }
+
+  user.Alerts = append(user.Alerts, alert)
+
+  err = user.Save()
+
+  return err
+}
+
+func (u *User) RemoveAlert(alert Alert) error {
+
+  index := -1
+
+  for k, v := range u.Alerts {
+   if alert == v {
+       index = k
+   }
+  }
+
+  u.Alerts = append(u.Alerts[:index], u.Alerts[index+1:]...)
+
+  u.Save()
+
+  return nil
+}
+
+func (user *User) CheckAndRemoveUserAlert() (string, error) {
+  var message string
+
+  for _, alert := range user.Alerts {
+    coin, err := FindCoinByName(alert.Name)
+
+    if err != nil {
+      return message, err
+    }
+
+    var res bool
+
+    if (alert.Compare == ">") {
+      res = coin.Value > alert.Value
+    }
+
+    if (alert.Compare == "<") {
+      res = coin.Value < alert.Value
+    }
+
+    if res {
+      message += fmt.Sprintf("%s %f %s %f \n", alert.Name, alert.Value, alert.Compare, coin.Value)
+      user.RemoveAlert(alert)
+    }
+  }
+
+  return message, nil
 }
 
 func NewUser(name string, id_telegram int64) User {

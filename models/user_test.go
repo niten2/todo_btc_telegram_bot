@@ -81,4 +81,27 @@ func TestUser(t *testing.T) {
     So(user.Name, ShouldEqual, "test")
     So(user.IdTelegram, ShouldEqual, 123)
   })
+
+  Convey("CheckAndRemoveUserAlert", t, func() {
+    user, _ := CreateUser("test", 123)
+    user.AddAlert("p SBD > 0.000020")
+    CreateCoin("BTC_SBD", 100)
+
+    message, _ := user.CheckAndRemoveUserAlert()
+
+    resMessage := "BTC_SBD 0.000020 > 100.000000 \n"
+
+    So(message, ShouldEqual, resMessage)
+  })
+
+  Convey("RemoveAlert", t, func() {
+    user, _ := CreateUser("test", 123)
+    user.AddAlert("p SBD > 0.000020")
+    user.AddAlert("p SBC < 0.000020")
+
+    user.RemoveAlert(user.Alerts[0])
+
+    So(len(user.Alerts), ShouldEqual, 1)
+  })
+
 }

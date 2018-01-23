@@ -34,6 +34,7 @@ func (a *Alert) AsMap() map[string]string {
 
 // example input "p SBD > 0.000020"
 func NewAlert(input string) (Alert, error) {
+  var alert Alert
   values := strings.Split(input, " ")
 
   name := fmt.Sprintf("BTC_%s", values[1])
@@ -41,15 +42,17 @@ func NewAlert(input string) (Alert, error) {
   value, err := strconv.ParseFloat(values[3], 64)
 
   if err != nil {
-    return Alert{}, err
+    return alert, err
   }
 
-  return Alert{
+  alert = Alert{
     ID: bson.NewObjectId(),
     Name: name,
     Compare: compare,
     Value: value,
-  }, nil
+  }
+
+  return alert, nil
 }
 
 func RemoveAlert(user User, alert Alert) error {
