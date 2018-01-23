@@ -51,16 +51,16 @@ func NewUser(name string, id_telegramm int64) User {
   }
 }
 
-func CreateUser(name string, id_telegramm int64) User {
+func CreateUser(name string, id_telegramm int64) (User, error) {
   user := User{
     ID: bson.NewObjectId(),
     Name: name,
     IdTelegramm: id_telegramm,
   }
 
-  user.Create()
+  err := user.Create()
 
-  return user
+  return user, err
 }
 
 // NOTE find

@@ -14,6 +14,8 @@ import (
   "app-telegram/config"
 )
 
+const MessageError = "Что то пошло не так"
+
 func InitActions (bot *tgbotapi.BotAPI) {
   fmt.Println("InitActions for bot")
 
@@ -40,37 +42,52 @@ func InitActions (bot *tgbotapi.BotAPI) {
     id_telegram := update.Message.Chat.ID
     text := update.Message.Text
 
+    _, err := models.FindUserByIdTelegramm(id_telegram)
+
+    if err.Error() == "not found" {
+      logger.Log.WithFields(logrus.Fields{
+        "id_telegram": id_telegram,
+      }).Info("user create")
+
+      _, err := models.CreateUser(user_name, id_telegram)
+
+      if err != nil {
+        logger.Log.Warn(err)
+        SendResponseError(bot, id_telegram)
+        continue
+      }
+    }
+
     logger.Log.WithFields(logrus.Fields{
       "user_name": user_name,
       "text": text,
       "id_telegram": id_telegram,
-    }).Info("user send message")
+    }).Info("bot receive message")
 
     message := CreateResponse(text, id_telegram)
     response := tgbotapi.NewMessage(id_telegram, message)
 
     bot.Send(response)
-
   }
 }
 
 func CreateResponse(input string, id_telegram int64) string {
-    var msg string
+  var msg string
 
-    switch {
-      case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
-        msg = CreateAlert(input, id_telegram)
-      case regexp.MustCompile("^plist").MatchString(input):
-        msg = CreatePoloniexCoinList()
-      case regexp.MustCompile("/help").MatchString(input):
-        msg = "описание о боте"
-      case regexp.MustCompile("/settings").MatchString(input):
-        msg = "описание настроек"
-      default:
-        msg = "команда непонятна"
-    }
+  switch {
+    case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
+      msg = CreateAlert(input, id_telegram)
+    case regexp.MustCompile("^plist").MatchString(input):
+      msg = CreatePoloniexCoinList()
+    case regexp.MustCompile("/help").MatchString(input):
+      msg = "описание о боте"
+    case regexp.MustCompile("/settings").MatchString(input):
+      msg = "описание настроек"
+    default:
+      msg = "команда непонятна"
+  }
 
-    return msg
+  return msg
 }
 
 func CreateAlert(input string, id_telegram int64) string {
@@ -85,7 +102,7 @@ func CreateAlert(input string, id_telegram int64) string {
 
   if err != nil {
     logger.Log.Warn(err)
-    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+    return MessageError
   }
 
   user.Alerts = append(user.Alerts, alert)
@@ -93,7 +110,7 @@ func CreateAlert(input string, id_telegram int64) string {
 
   if err != nil {
     logger.Log.Warn(err)
-    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+    return MessageError
   }
 
   return "ok"
@@ -104,8 +121,14 @@ func CreatePoloniexCoinList() string {
 
   if err != nil {
     logger.Log.Warn(err)
-    return fmt.Sprintf("Что то пошло не так %s \n", err.Error())
+    return MessageError
   }
 
   return models.CreatePoloniexCoinList(coins)
 }
+
+func SendResponseError(bot *tgbotapi.BotAPI, id_telegram int64) {
+  response := tgbotapi.NewMessage(id_telegram, MessageError)
+  bot.Send(response)
+}
+
