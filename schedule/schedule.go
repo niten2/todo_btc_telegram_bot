@@ -2,14 +2,16 @@ package schedule
 
 import (
 	// "fmt"
+
   // "log"
   // "os"
   // "strconv"
-  // "app-telegram/bot_api"
   // "app-telegram/models"
 
 	"gopkg.in/telegram-bot-api.v4"
 	"github.com/jasonlvhit/gocron"
+
+  "app-telegram/bot_api"
 )
 
 func Run (bot *tgbotapi.BotAPI) {
@@ -29,6 +31,10 @@ func Run (bot *tgbotapi.BotAPI) {
 
   // log.Printf(`start schedule update poloniex coins every 10 minutes`)
   // gocron.Every(10).Minutes().Do(models.UpdateCoinsPoloniex)
+
+  // gocron.Every(1).Day().At("10:00").Do(bot_api.SendMessage, bot)
+
+  gocron.Every(10).Minutes().Do(bot_api.CheckCoin)
 
   gocron.Start()
 }

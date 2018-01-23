@@ -34,7 +34,7 @@ func TestCreateAlert(t *testing.T) {
     id_telegram = 123
 
     res := CreateAlert("p SBD > 0.000020", id_telegram)
-    user, _ := models.FindUserByIdTelegramm(id_telegram)
+    user, _ := models.FindUserByIdTelegram(id_telegram)
 
     fmt.Println(999, user.Alerts)
 
@@ -58,5 +58,15 @@ func TestCreatePoloniexCoinList(t *testing.T) {
 
     So(res, ShouldContainSubstring, "test")
     So(res, ShouldContainSubstring, "123")
+  })
+
+  Convey("should return list poloniex", t, func() {
+    test.DropDatabase()
+
+    res := CreatePoloniexCoinList()
+
+    fmt.Println(res)
+
+    So(res, ShouldNotContainSubstring, "list")
   })
 }

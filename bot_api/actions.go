@@ -42,7 +42,7 @@ func InitActions () {
     id_telegram := update.Message.Chat.ID
     text := update.Message.Text
 
-    _, _ = FindOrCreateUserByIdTelegram(id_telegram)
+    _, _ = models.FindOrCreateUserByIdTelegram(user_name, id_telegram)
 
     logger.Log.WithFields(logrus.Fields{
       "user_name": user_name,
@@ -110,10 +110,66 @@ func CreatePoloniexCoinList() string {
     return MessageError
   }
 
+  if len(coins) == 0 {
+    return "данные в базе отсуствуют"
+  }
+
   return models.CreatePoloniexCoinList(coins)
+}
+
+func SendMessage(id_telegram int64, message string) {
+  response := tgbotapi.NewMessage(id_telegram, message)
+  Bot.Send(response)
 }
 
 func SendResponseError(id_telegram int64) {
   response := tgbotapi.NewMessage(id_telegram, MessageError)
   Bot.Send(response)
+}
+
+
+
+// NOTE check coin
+func CheckCoin() {
+  models.FetchCoin()
+  models.CheckUserAlert()
+}
+
+func CheckUsersAlert() {
+  users, err := models.FindUserAll()
+
+  if err != nil {
+    logger.Log.Warn(err)
+  }
+
+  for _, user := range users {
+    CheckUserAlert(user)
+  }
+}
+
+func CheckUserAlert(user User) {
+  for _, alert := range user.Alerts {
+
+    coin, err := FindCoinByName(alert.Name)
+
+    if err != nil {
+      logger.Log.Warn(err)
+    }
+
+    var res bool
+
+    if (alert.Compare == ">") {
+      res = alert.Value > coin.Value
+    }
+
+    if (alert.Compare == "<") {
+      res = alert.Value < coin.Value
+    }
+
+    if res {
+      message := fmt.Sprintf("%s %s %s %s", alert.Name, alert.Value, alert.Compare, coin.Value)
+      bot_api.SendMessage(user.IdTelegram, message)
+      RemoveAlert(user, alert)
+    }
+  }
 }

@@ -5,6 +5,7 @@ import (
 
   "gopkg.in/mgo.v2/bson"
 
+  // "app-telegram/logger"
   "app-telegram/db"
 )
 
@@ -60,6 +61,16 @@ func CreateUser(name string, id_telegram int64) (User, error) {
 }
 
 // NOTE find
+func FindUserAll() ([]User, error) {
+  var users []User
+
+  user_collection := db.Db.C("users")
+
+  err := user_collection.Find(nil).All(&users)
+
+  return users, err
+}
+
 func FindUserById(id string) (User, error) {
   user_collection := db.Db.C("users")
 

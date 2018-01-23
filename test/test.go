@@ -3,10 +3,6 @@ package test
 import (
   // "fmt"
 
-  // "testing"
-  // "github.com/joho/godotenv"
-  // . "github.com/smartystreets/goconvey/convey"
-
   "os"
   "log"
   "gopkg.in/mgo.v2"
@@ -22,6 +18,10 @@ func Setup() {
 
 func SetupEnv() {
   os.Setenv("ENV", "test")
+}
+
+func DropDatabase() {
+  db.Db.DropDatabase()
 }
 
 func SetDebugDb() {

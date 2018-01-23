@@ -52,3 +52,6 @@ func NewAlert(input string) (Alert, error) {
   }, nil
 }
 
+func RemoveAlert(user User, alert Alert) error {
+  return nil
+}

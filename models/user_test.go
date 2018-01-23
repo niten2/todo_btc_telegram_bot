@@ -81,5 +81,4 @@ func TestUser(t *testing.T) {
     So(user.Name, ShouldEqual, "test")
     So(user.IdTelegram, ShouldEqual, 123)
   })
-
 }
