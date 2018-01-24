@@ -1,7 +1,7 @@
 package bot_api
 
 import (
-  "fmt"
+  // "fmt"
 
   "testing"
   . "github.com/smartystreets/goconvey/convey"
@@ -75,16 +75,17 @@ func TestCheckUsersAlert(t *testing.T) {
   test.Setup()
 
   Convey("should return list poloniex", t, func() {
-    _, _ = models.CreateUser("user", 123)
+    user, _ := models.CreateUser("user", 123)
+    user.AddAlert("p SBD < 0.1")
+    models.CreateCoin("BTC_SBD", 0.02)
+
     _, _ = models.CreateCoin("BTC_XRP", 1.5)
 
     CheckUsersAlert()
 
-    // fmt.Println(res)
-    fmt.Println(111)
+    user, _ = models.FindUserById(string(user.ID))
 
-
-    // So(res, ShouldNotContainSubstring, "list")
+    So(user.Alerts, ShouldBeEmpty)
   })
 
 }

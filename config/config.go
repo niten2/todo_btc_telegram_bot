@@ -11,6 +11,7 @@ import (
 
 type Setting struct {
   Env string
+  IsEnvTest bool
   DbUrl string
   DbName string
   TelegramToken string
@@ -25,8 +26,6 @@ func Settings() Setting {
 
     if err != nil {
       err = godotenv.Load(".env.test")
-
-      fmt.Println(111)
 
       if err != nil {
         panic(err)
@@ -58,6 +57,7 @@ func Settings() Setting {
 
   return Setting{
     Env: os.Getenv("ENV"),
+    IsEnvTest: os.Getenv("ENV") == "test",
     DbUrl: os.Getenv("DB_URL"),
     DbName: DbName,
     TelegramToken: os.Getenv("TELEGRAM_TOKEN"),

@@ -16,7 +16,7 @@ import (
 
 const MessageError = "Что то пошло не так"
 
-func InitActions () {
+func InitActions() {
   fmt.Println("InitActions for bot")
 
   u := tgbotapi.NewUpdate(0)
@@ -29,7 +29,9 @@ func InitActions () {
   }
 
   // NOTE for testing
-  if config.Settings().Env == "test" {
+  if config.Settings().IsEnvTest {
+    // return
+
     os.Exit(0)
   }
 
@@ -118,6 +120,11 @@ func CreatePoloniexCoinList() string {
 }
 
 func SendMessage(id_telegram int64, message string) {
+  // NOTE for testing
+  if config.Settings().IsEnvTest {
+    return
+  }
+
   response := tgbotapi.NewMessage(id_telegram, message)
   Bot.Send(response)
 }
