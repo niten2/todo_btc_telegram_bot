@@ -45,8 +45,6 @@ func InitActions() {
 
   // NOTE for testing
   if config.Settings().IsEnvTest {
-    // return
-
     os.Exit(0)
   }
 
@@ -158,6 +156,8 @@ func SendMessage(id_telegram int64, message string) {
 
 // NOTE check coin
 func CheckCoin() {
+  logger.Log.Info("CheckCoin start")
+
   err := models.FetchCoin()
 
   if err != nil {
@@ -182,7 +182,9 @@ func CheckUsersAlert() {
     message, err := user.CheckAndRemoveUserAlert()
 
     if err != nil {
-      logger.Log.Warn("CheckUsersAlert", err)
+      logger.Log.WithFields(logrus.Fields{
+        "err": err,
+      }).Warn("CheckUsersAlert")
     }
 
     if message != "" {
@@ -191,5 +193,7 @@ func CheckUsersAlert() {
 
   }
 
-  logger.Log.Info("CheckUsersAlert not found")
+  if message == "" {
+    logger.Log.Info("CheckUsersAlert not found")
+  }
 }
