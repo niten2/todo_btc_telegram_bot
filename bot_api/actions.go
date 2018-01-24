@@ -14,7 +14,20 @@ import (
   "app-telegram/config"
 )
 
-const MessageError = "Что то пошло не так"
+const MessageError = "Something went wrong"
+const MessageUnknown = "The command is unknown, the list of command - help"
+
+const MessageHelp = `
+  possible commands \ n
+
+   1. plist, список - list of altcoins and their values (polonex) \n
+   2. an expression of the form "p SBD > 0.000020" sets the sending of the message by the bot if the following conditions occur \n
+   3. settings, настройки - displays a description of the settings for the current user \n
+   3. help, помощь - displays a description of the settings for the current user \n
+`
+const MessageSettings = `
+  Here you will see a list of all the settings
+`
 
 func InitActions() {
   fmt.Println("InitActions for bot")
@@ -65,14 +78,14 @@ func CreateResponse(input string, id_telegram int64) string {
   switch {
     case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
       msg = CreateAlert(input, id_telegram)
-    case regexp.MustCompile("^plist").MatchString(input):
+    case regexp.MustCompile("(plist)|(список)").MatchString(input):
       msg = CreatePoloniexCoinList()
-    case regexp.MustCompile("/help").MatchString(input):
-      msg = "описание о боте"
-    case regexp.MustCompile("/settings").MatchString(input):
-      msg = "описание настроек"
+    case regexp.MustCompile("(help)|(помощь)|(помо)").MatchString(input):
+      msg = MessageHelp
+    case regexp.MustCompile("(settings)|(настройки)|(настр)").MatchString(input):
+      msg = MessageSettings
     default:
-      msg = "команда непонятна"
+      msg = MessageUnknown
   }
 
   return msg

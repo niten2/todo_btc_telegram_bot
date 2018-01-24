@@ -4,9 +4,10 @@ import (
   // "fmt"
 
   "app-telegram/db"
-  "app-telegram/bot_api"
   "app-telegram/logger"
-  // "app-telegram/schedule"
+
+  "app-telegram/bot_api"
+  "app-telegram/schedule"
 )
 
 func main() {
@@ -14,5 +15,6 @@ func main() {
   logger.InitFileLogger()
 
   bot_api.InitBot()
+  schedule.InitSchedule()
   bot_api.InitActions()
 }
