@@ -10,7 +10,6 @@ import (
 
 )
 
-
 func TestSettings(t *testing.T) {
   os.Setenv("ENV", "test")
 
@@ -19,6 +18,9 @@ func TestSettings(t *testing.T) {
 
     ScheduleEverySeconds, _ := strconv.ParseBool(os.Getenv("SCHEDULE_EVERY_SECONDS"))
     TelegramUserId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_USER_ID"), 10, 64)
+
+    So(res.Env, ShouldEqual, "test")
+    So(res.IsEnvTest, ShouldEqual, true)
 
     So(res.DbUrl, ShouldEqual, os.Getenv("DB_URL"))
     So(res.DbName, ShouldEqual, "app_telegram_test")

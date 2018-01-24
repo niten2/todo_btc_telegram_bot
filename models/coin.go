@@ -8,9 +8,6 @@ import (
 
   "app-telegram/request"
   "app-telegram/db"
-
-  // "strings"
-  // "strconv"
 )
 
 type Coin struct {

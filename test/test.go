@@ -5,8 +5,8 @@ import (
 
   "os"
   "log"
+
   "gopkg.in/mgo.v2"
-  // "gopkg.in/h2non/gock.v1"
 
   "app-telegram/db"
 )

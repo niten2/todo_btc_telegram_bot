@@ -5,7 +5,6 @@ import (
 
   "gopkg.in/mgo.v2/bson"
 
-  // "app-telegram/logger"
   "app-telegram/db"
 )
 

@@ -154,6 +154,17 @@ func SendMessage(id_telegram int64, message string) {
   Bot.Send(response)
 }
 
+// TODO add info btc by shedule
+// func CreateInfoMessage() string {
+//   usd := request.GetCoinmarketcapCurrentBtc()
+//   balance_wallet := request.GetBitapsBalanceWallet()
+
+//   return fmt.Sprintf(`
+//     текущий курс %s
+//     btc в кошельке 0.%d
+//   `, usd, balance_wallet)
+// }
+
 // NOTE check coin
 func CheckCoin() {
   logger.Log.Info("CheckCoin start")
@@ -192,3 +203,4 @@ func CheckUsersAlert() {
     }
   }
 }
+

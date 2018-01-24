@@ -2,6 +2,7 @@ package db
 
 import (
   // "fmt"
+
   "os"
   "testing"
   . "github.com/smartystreets/goconvey/convey"
@@ -17,5 +18,4 @@ func TestConnect(t *testing.T) {
     So(Db, ShouldNotBeNil)
     So(Session, ShouldNotBeNil)
   })
-
 }
