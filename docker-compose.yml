@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  app:
+    image: app-telegram
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "./app-telegram"
+    links:
+      - mongo
+    volumes:
+      - .:/app
+
+  mongo:
+    ports:
+      - 27017:27017
+    image: mongo:3.5.13
+    volumes:
+      - ./etc/mongo:/data/db
+

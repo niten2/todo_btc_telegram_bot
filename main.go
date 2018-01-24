@@ -2,16 +2,19 @@ package main
 
 import (
   // "fmt"
+
+  "app-telegram/db"
+  "app-telegram/logger"
+
   "app-telegram/bot_api"
   "app-telegram/schedule"
-  "github.com/joho/godotenv"
 )
 
 func main() {
-  _ = godotenv.Load()
+  db.Connect()
+  logger.InitFileLogger()
 
-  bot := bot_api.InitBot()
-
-  schedule.Run(bot)
-  bot_api.InitActions(bot)
+  bot_api.InitBot()
+  schedule.InitSchedule()
+  bot_api.InitActions()
 }

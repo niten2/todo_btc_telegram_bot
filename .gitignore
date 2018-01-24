@@ -1,3 +1,5 @@
 .env
 tmp
 app-telegram
+etc
+logrus.log
