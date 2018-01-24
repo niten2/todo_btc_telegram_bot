@@ -1,5 +1,5 @@
-FROM node:8.8.1
+FROM ubuntu:14.04
 
-RUN mkdir -p /app
-WORKDIR /app
-COPY . /app
+RUN mkdir -p /app-telegram
+WORKDIR /app-telegram
+COPY . /app-telegram
