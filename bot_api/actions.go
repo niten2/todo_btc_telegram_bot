@@ -190,10 +190,5 @@ func CheckUsersAlert() {
     if message != "" {
       SendMessage(user.IdTelegram, message)
     }
-
-  }
-
-  if message == "" {
-    logger.Log.Info("CheckUsersAlert not found")
   }
 }
