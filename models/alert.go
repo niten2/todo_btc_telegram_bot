@@ -2,17 +2,11 @@ package models
 
 import (
   "fmt"
-  // "gopkg.in/mgo.v2"
-  // "crypto/sha256"
-  // "gopkg.in/mgo.v2/bson"
+
   "gopkg.in/mgo.v2/bson"
-  // "encoding/json"
 
   "strings"
   "strconv"
-
-  // "app-telegram/db"
-  // "app-telegram/types"
 )
 
 type Alert struct {

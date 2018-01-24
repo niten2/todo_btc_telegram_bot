@@ -3,15 +3,12 @@ package request
 import (
   // "fmt"
 
-	// "log"
-  // "os"
   "net/http"
   "encoding/json"
   "io/ioutil"
+  "strconv"
 
   // "app-telegram/models"
-
-  "strconv"
 )
 
 type CoinPoloniex struct {
@@ -22,24 +19,24 @@ type CoinPoloniex struct {
 func RequestPoloniex() ([]CoinPoloniex, error) {
   url_poloniex := "https://poloniex.com/public?command=returnTicker"
 
-	var coins map[string]interface{}
+  var coins map[string]interface{}
   var result []CoinPoloniex
 
   res, err := http.Get(url_poloniex)
 
-	if err != nil {
+  if err != nil {
     return nil, err
-	}
+  }
 
   defer res.Body.Close()
 
   body, err := ioutil.ReadAll(res.Body)
 
-	if err != nil {
+  if err != nil {
     return nil, err
-	}
+  }
 
-	json.Unmarshal(body, &coins)
+  json.Unmarshal(body, &coins)
 
   for v, k := range coins {
     last := k.(map[string]interface{})["last"].(string)
@@ -57,4 +54,3 @@ func RequestPoloniex() ([]CoinPoloniex, error) {
 
   return result, nil
 }
-

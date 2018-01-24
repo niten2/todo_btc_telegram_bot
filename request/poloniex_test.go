@@ -3,8 +3,8 @@ package request
 import (
   // "fmt"
 
-	"gopkg.in/h2non/gock.v1"
-	"testing"
+  "gopkg.in/h2non/gock.v1"
+  "testing"
   . "github.com/smartystreets/goconvey/convey"
 
   "app-telegram/test"

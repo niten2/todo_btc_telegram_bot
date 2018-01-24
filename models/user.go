@@ -25,7 +25,7 @@ func (u *User) Create() error {
 func (u *User) Save() error {
   user_collection := db.Db.C("users")
 
-	change := bson.M{
+  change := bson.M{
     "$set": bson.M{
       "name": u.Name,
       "id_telegram": u.IdTelegram,

@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	db.Connect()
+  db.Connect()
   logger.InitFileLogger()
 
   bot_api.InitBot()

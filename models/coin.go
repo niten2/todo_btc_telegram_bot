@@ -27,7 +27,7 @@ func (c *Coin) Create() error {
 func (c *Coin) Save() error {
   coin_collection := db.Db.C("coins")
 
-	change := bson.M{
+  change := bson.M{
     "$set": bson.M{
       "name": c.Name,
       "value": c.Value,

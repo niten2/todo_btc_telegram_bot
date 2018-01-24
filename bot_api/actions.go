@@ -108,11 +108,6 @@ func CreateAlert(input string, id_telegram int64) string {
     return MessageError
   }
 
-  if err != nil {
-    logger.Log.Warn(err)
-    return MessageError
-  }
-
   user.Alerts = append(user.Alerts, alert)
   err = user.Save()
 

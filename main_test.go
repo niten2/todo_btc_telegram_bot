@@ -3,7 +3,6 @@ package main
 import (
   // "fmt"
 
-  // "os"
   "testing"
 
   "gopkg.in/h2non/gock.v1"

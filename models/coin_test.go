@@ -5,7 +5,7 @@ import (
 
   "testing"
   . "github.com/smartystreets/goconvey/convey"
-	"gopkg.in/h2non/gock.v1"
+  "gopkg.in/h2non/gock.v1"
 
   "app-telegram/test"
 )

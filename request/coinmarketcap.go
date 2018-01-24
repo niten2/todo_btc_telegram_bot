@@ -2,8 +2,8 @@ package request
 
 import (
   // "fmt"
-  // "os"
-	"log"
+
+  "log"
   "encoding/json"
   "github.com/parnurzeal/gorequest"
 )
@@ -21,9 +21,9 @@ func GetCoinmarketcapCurrentBtc() string {
 
   _, body, err := request.Get(url).End()
 
-	if err != nil {
-		log.Panic(err)
-	}
+  if err != nil {
+    log.Panic(err)
+  }
 
   res := []Coinmarketcap{}
   errs := json.Unmarshal([]byte(body), &res)
