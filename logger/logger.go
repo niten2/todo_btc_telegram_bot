@@ -2,10 +2,11 @@ package logger
 
 import (
   "fmt"
-  "app-telegram/config"
 
   "os"
   "github.com/sirupsen/logrus"
+
+  "app-telegram/config"
 )
 
 var Log = logrus.New()
@@ -13,7 +14,6 @@ var Log = logrus.New()
 func InitFileLogger() {
   if config.Settings().IsEnvTest {
     Log.Out = os.Stdout
-    return
   }
 
   file, err := os.OpenFile("logrus.log", os.O_CREATE | os.O_WRONLY, 0666)

@@ -16,6 +16,7 @@ import (
 
 const MessageError = "Something went wrong"
 const MessageUnknown = "The command is unknown, the list of command - help"
+const MessageAddAlert = "Alert successfully added"
 
 const MessageHelp = `
   possible commands \ n
@@ -114,7 +115,7 @@ func CreateAlert(input string, id_telegram int64) string {
     return MessageError
   }
 
-  return "ok"
+  return MessageAddAlert
 }
 
 func CreatePoloniexCoinList() string {
@@ -138,18 +139,27 @@ func SendMessage(id_telegram int64, message string) {
     return
   }
 
-  response := tgbotapi.NewMessage(id_telegram, message)
-  Bot.Send(response)
-}
+  logger.Log.WithFields(logrus.Fields{
+    "id_telegram": id_telegram,
+    "message": message,
+  }).Info("bot send message")
 
-func SendResponseError(id_telegram int64) {
-  response := tgbotapi.NewMessage(id_telegram, MessageError)
+  response := tgbotapi.NewMessage(id_telegram, message)
   Bot.Send(response)
 }
 
 // NOTE check coin
 func CheckCoin() {
-  models.FetchCoin()
+  err := models.FetchCoin()
+
+  if err != nil {
+    logger.Log.WithFields(logrus.Fields{
+      "err": err,
+    }).Info("CheckCoin")
+  } else {
+    logger.Log.Info("FetchCoin successfully updated")
+  }
+
   CheckUsersAlert()
 }
 
@@ -164,11 +174,14 @@ func CheckUsersAlert() {
     message, err := user.CheckAndRemoveUserAlert()
 
     if err != nil {
-      logger.Log.Warn(err)
+      logger.Log.Warn("CheckUsersAlert", err)
     }
 
     if message != "" {
       SendMessage(user.IdTelegram, message)
     }
+
   }
+
+  logger.Log.Info("CheckUsersAlert not found")
 }

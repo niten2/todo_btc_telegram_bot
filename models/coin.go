@@ -83,8 +83,6 @@ func FetchCoin() (error) {
     return err
   }
 
-  fmt.Println(len(resp))
-
   for _, v := range resp {
     coin, err := FindCoinByName(v.Name)
 
