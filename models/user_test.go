@@ -89,7 +89,7 @@ func TestUser(t *testing.T) {
 
     message, _ := user.CheckAndRemoveUserAlert()
 
-    resMessage := "BTC_SBD 0.000020 > 100.000000 \n"
+    resMessage := "ALERT BTC_SBD 0.000020 > 100.000000 \n"
 
     So(message, ShouldEqual, resMessage)
   })

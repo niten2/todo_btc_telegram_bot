@@ -130,7 +130,7 @@ func FindCoinByName(name string) (Coin, error) {
 
 // Actions
 func CreatePoloniexCoinList(coins []Coin) string {
-  res := "poliniex list \n"
+  res := "Poliniex list \n"
 
   for _, coin := range coins {
     res = res + fmt.Sprintf("%s %f \n", coin.Name, coin.Value)

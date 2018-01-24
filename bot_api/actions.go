@@ -17,6 +17,7 @@ import (
 const MessageError = "Something went wrong"
 const MessageUnknown = "The command is unknown, the list of command - help"
 const MessageAddAlert = "Alert successfully added"
+const MessageDataNotFound = "Data not found"
 
 const MessageHelp = `
   possible commands \ n
@@ -127,7 +128,7 @@ func CreatePoloniexCoinList() string {
   }
 
   if len(coins) == 0 {
-    return "данные в базе отсуствуют"
+    return MessageDataNotFound
   }
 
   return models.CreatePoloniexCoinList(coins)
@@ -155,7 +156,7 @@ func CheckCoin() {
   if err != nil {
     logger.Log.WithFields(logrus.Fields{
       "err": err,
-    }).Info("CheckCoin")
+    }).Warn("CheckCoin")
   } else {
     logger.Log.Info("FetchCoin successfully updated")
   }
