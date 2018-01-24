@@ -37,7 +37,7 @@ func NewAlert(input string) (Alert, error) {
   var alert Alert
   values := strings.Split(input, " ")
 
-  name := fmt.Sprintf("BTC_%s", values[1])
+  name := fmt.Sprintf("BTC_%s", strings.ToUpper(values[1]))
   compare := values[2]
   value, err := strconv.ParseFloat(values[3], 64)
 

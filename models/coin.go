@@ -56,7 +56,7 @@ func FindCoinAll() ([]Coin, error) {
   return coins, nil
 }
 
-func NewCoin (name string, value float64) Coin {
+func NewCoin(name string, value float64) Coin {
   return Coin{
     ID: bson.NewObjectId(),
     Name: name,

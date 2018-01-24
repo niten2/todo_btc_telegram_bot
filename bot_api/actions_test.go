@@ -10,66 +10,82 @@ import (
   "app-telegram/models"
 )
 
-// func TestCreateResponse(t *testing.T) {
-//   test.Setup()
+func TestCreateResponse(t *testing.T) {
+  test.Setup()
 
-//   Convey("should return string poloniex", t, func() {
-//     res := CreateResponse("p SBD > 0.000020", 123)
+  Convey("should return string poloniex", t, func() {
+    models.CreateCoin("BTC_SBD", 1)
+    res := CreateResponse("p SBD > 0.000020", 123)
 
-//     So(res, ShouldEqual, "ok")
-//   })
+    So(res, ShouldEqual, "Alert successfully added")
+  })
 
-//   Convey("should return poloniex list", t, func() {
-//     res := CreateResponse("plist", 123)
+  Convey("should return string poloniex", t, func() {
+    test.DropDatabase()
+    res := CreateResponse("p SBD > 0.000020", 123)
 
-//     So(res, ShouldEqual, "poliniex list \n")
-//   })
-// }
+    So(res, ShouldEqual, "Something went wrong")
+  })
 
-// func TestCreateAlert(t *testing.T) {
-//   test.Setup()
-//   var id_telegram int64
+  Convey("should return poloniex list", t, func() {
+    test.DropDatabase()
+    res := CreateResponse("plist", 123)
 
-//   Convey("user not found, should return string poloniex", t, func() {
-//     id_telegram = 123
+    So(res, ShouldEqual, "Data not found")
+  })
+}
 
-//     res := CreateAlert("p SBD > 0.000020", id_telegram)
-//     user, _ := models.FindUserByIdTelegram(id_telegram)
+func TestCreateAlert(t *testing.T) {
+  test.Setup()
+  var id_telegram int64
 
-//     fmt.Println(999, user.Alerts)
+  Convey("user not found, should return string poloniex", t, func() {
+    id_telegram = 123
+    models.CreateCoin("BTC_SBD", 1)
 
-//     So(res, ShouldEqual, "ok")
+    res := CreateAlert("p SBD > 0.000020", id_telegram)
+    user, _ := models.FindUserByIdTelegram(id_telegram)
 
-//     alert := user.Alerts[0]
+    So(res, ShouldEqual, "Alert successfully added")
 
-//     So(alert.Name, ShouldEqual, "BTC_SBD")
-//     So(alert.Compare, ShouldEqual, ">")
-//     So(alert.Value, ShouldEqual, 0.000020)
-//   })
-// }
+    alert := user.Alerts[0]
 
-// func TestCreatePoloniexCoinList(t *testing.T) {
-//   test.Setup()
+    So(alert.Name, ShouldEqual, "BTC_SBD")
+    So(alert.Compare, ShouldEqual, ">")
+    So(alert.Value, ShouldEqual, 0.000020)
+  })
 
-//   Convey("should return list poloniex", t, func() {
-//     _, _ = models.CreateCoin("test", 123)
+  Convey("coin not found, user not found, should return string poloniex", t, func() {
+    test.DropDatabase()
+    id_telegram = 123
 
-//     res := CreatePoloniexCoinList()
+    res := CreateAlert("p SBD > 0.000020", id_telegram)
 
-//     So(res, ShouldContainSubstring, "test")
-//     So(res, ShouldContainSubstring, "123")
-//   })
+    So(res, ShouldEqual, "Something went wrong")
+  })
 
-//   Convey("should return list poloniex", t, func() {
-//     test.DropDatabase()
+}
 
-//     res := CreatePoloniexCoinList()
+func TestCreatePoloniexCoinList(t *testing.T) {
+  test.Setup()
 
-//     fmt.Println(res)
+  Convey("should return list poloniex", t, func() {
+    _, _ = models.CreateCoin("test", 123)
 
-//     So(res, ShouldNotContainSubstring, "list")
-//   })
-// }
+    res := CreatePoloniexCoinList()
+
+    So(res, ShouldContainSubstring, "test")
+    So(res, ShouldContainSubstring, "123")
+  })
+
+  Convey("should return list poloniex", t, func() {
+    test.DropDatabase()
+
+    res := CreatePoloniexCoinList()
+
+    So(res, ShouldContainSubstring, "Data not found")
+  })
+}
 
 func TestCheckUsersAlert(t *testing.T) {
   test.Setup()
@@ -87,5 +103,4 @@ func TestCheckUsersAlert(t *testing.T) {
 
     So(user.Alerts, ShouldBeEmpty)
   })
-
 }

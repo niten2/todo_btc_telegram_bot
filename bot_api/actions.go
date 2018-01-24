@@ -103,6 +103,13 @@ func CreateAlert(input string, id_telegram int64) string {
 
   alert, err := models.NewAlert(input)
 
+  _, err = models.FindCoinByName(alert.Name)
+
+  if err != nil {
+    logger.Log.Warn(err)
+    return MessageError
+  }
+
   if err != nil {
     logger.Log.Warn(err)
     return MessageError
