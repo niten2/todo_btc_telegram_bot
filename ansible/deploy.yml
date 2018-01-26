@@ -1,0 +1,42 @@
+- hosts: bot
+
+  tasks:
+    - name: docker-compose stop
+      command: docker-compose stop
+      register: output
+      args:
+        chdir: ~/app-telegram
+
+    - name: copy .env.production
+      copy:
+        src: "../../../../.env.production"
+        dest: "~/app-telegram/.env"
+
+    - name: copy go build app-telegram
+      copy:
+        src: ../../../../app-telegram
+        dest: ~/app-telegram/app-telegram
+
+    - name: docker-compose build
+      shell: docker-compose build
+      args:
+        chdir: ~/app-telegram
+      register: output
+
+    - debug:
+      msg: {{ output.stdout }}
+
+    - name: clear intermediate containers
+      command: docker rmi $(docker images -f "dangling=true" -q)
+      args:
+        chdir: ~/app-telegram
+      register: output
+
+    - name: docker-compose up -d
+      shell: docker-compose up -d
+      args:
+        chdir: ~/app-telegram
+      register: output
+
+    - debug:
+      msg: {{ output.stdout }}
