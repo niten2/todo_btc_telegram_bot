@@ -1,5 +1,7 @@
 .env
+.env.production
 tmp
 app-telegram
 etc
 logrus.log
+ansible/hosts

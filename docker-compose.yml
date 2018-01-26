@@ -2,16 +2,14 @@ version: '3'
 services:
 
   app:
-    image: app-telegram
+    image: golang:1.10rc1-stretch
     container_name: app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: bash -c "./app-telegram"
+    command: bash -c "cd /app-telegram; ./app-telegram"
     links:
       - mongo
     volumes:
-      - .:/app
+      - ./app-telegram:/app-telegram/app-telegram
+      - ./.env:/app-telegram/.env
 
   mongo:
     ports:
@@ -19,4 +17,3 @@ services:
     image: mongo:3.5.13
     volumes:
       - ./etc/mongo:/data/db
-

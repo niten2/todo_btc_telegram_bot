@@ -1,22 +1,15 @@
 package schedule
 
 import (
-	"fmt"
+	// "fmt"
 
 	"github.com/jasonlvhit/gocron"
 
-  "app-telegram/bot_api"
+	"app-telegram/bot_api"
 )
 
 func InitSchedule() {
-  // NOTE examples
-  // gocron.Every(2).Seconds().Do(bot_api.SendMessage, bot)
-  // gocron.Every(1).Day().At("10:00").Do(bot_api.SendMessage, bot)
-  // gocron.Every(10).Minutes().Do(models.UpdateCoinsPoloniex)
+	gocron.Every(5).Minutes().Do(bot_api.CheckCoin)
 
-  fmt.Println(2222)
-
-  gocron.Every(1).Minutes().Do(bot_api.CheckCoin)
-
-  gocron.Start()
+	gocron.Start()
 }
