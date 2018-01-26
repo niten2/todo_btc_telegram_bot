@@ -13,6 +13,18 @@ https://web.telegram.org/#/im?p=@coint_info_bot
 - cp .env.sample .env
 - go run
 
+#### Production mode
+- go build .
+
+- cp .env.sample .env.production
+- edit .env.production
+
+after you may use ansible script
+- cd ./ansible
+- cp hosts.sample hosts
+- edit ./ansible/hosts
+- ansible-playbook setup (install docker, move app on remote server)
+
 ### Describe about bot
 - /start
-- /help
+- /help (list commands)
