@@ -14,7 +14,7 @@ func TestCreateResponse(t *testing.T) {
 	test.Setup()
 
 	Convey("should return string poloniex", t, func() {
-		models.CreateCoin("BTC_SBD", 1)
+		models.CreateCoin("BTC_SBD", 1, 1)
 		res := CreateResponse("p SBD > 0.000020", 123)
 
 		So(res, ShouldEqual, "Alert successfully added")
@@ -41,7 +41,7 @@ func TestCreateAlert(t *testing.T) {
 
 	Convey("user not found, should return string poloniex", t, func() {
 		id_telegram = 123
-		models.CreateCoin("BTC_SBD", 1)
+		models.CreateCoin("BTC_SBD", 1, 1)
 
 		res := CreateAlert("p SBD > 0.000020", id_telegram)
 		user, _ := models.FindUserByIdTelegram(id_telegram)
@@ -70,7 +70,7 @@ func TestCreatePoloniexCoinList(t *testing.T) {
 	test.Setup()
 
 	Convey("should return list poloniex", t, func() {
-		_, _ = models.CreateCoin("test", 123)
+		_, _ = models.CreateCoin("test", 123, 123)
 
 		res := CreatePoloniexCoinList()
 
@@ -93,9 +93,9 @@ func TestCheckUsersAlert(t *testing.T) {
 	Convey("should return list poloniex", t, func() {
 		user, _ := models.CreateUser("user", 123)
 		user.AddAlert("p SBD < 0.1")
-		models.CreateCoin("BTC_SBD", 0.02)
+		models.CreateCoin("BTC_SBD", 0.02, 0.02)
 
-		_, _ = models.CreateCoin("BTC_XRP", 1.5)
+		_, _ = models.CreateCoin("BTC_XRP", 1.5, 1.5)
 
 		CheckUsersAlert()
 
@@ -109,8 +109,8 @@ func TestAddUsdtCoin(t *testing.T) {
 	test.Setup()
 
 	Convey("should return list poloniex", t, func() {
-		models.CreateCoin("BTC_SBD", 3)
-		models.CreateCoin("USDT_BTC", 2.5)
+		models.CreateCoin("BTC_SBD", 3, 3)
+		models.CreateCoin("USDT_BTC", 2.5, 2.5)
 
 		AddUsdtCoin()
 
