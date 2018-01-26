@@ -1,2 +1,2 @@
 [bot]
-YOUR_IP ansible_ssh_user=root sshpass=SSH_PASSWORD
+YOU_IP ansible_ssh_user=root sshpass=SSH_PASSWORD

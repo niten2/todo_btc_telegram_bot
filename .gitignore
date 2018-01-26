@@ -5,3 +5,4 @@ app-telegram
 etc
 logrus.log
 ansible/hosts
+ansible/ansible.log

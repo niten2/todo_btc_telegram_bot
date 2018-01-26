@@ -10,6 +10,6 @@
   # sudo dpkg-reconfigure locales
 
   roles:
-  #   # - pip
-  #   # - docker
+    - pip
+    - docker
     - app-telegram
