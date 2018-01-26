@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 
-	// "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
 	"app-telegram/db"
@@ -11,9 +10,10 @@ import (
 )
 
 type Coin struct {
-	ID    bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	Name  string        `json:"name" bson:"name"`
-	Value float64       `json:"value" bson:"value"`
+	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	Name      string        `json:"name" bson:"name"`
+	Value     float64       `json:"value" bson:"value"`
+	ValueUsdt float64       `json:"value_usdt" bson:"value_usdt"`
 }
 
 func (c *Coin) Create() error {
@@ -29,8 +29,9 @@ func (c *Coin) Save() error {
 
 	change := bson.M{
 		"$set": bson.M{
-			"name":  c.Name,
-			"value": c.Value,
+			"name":       c.Name,
+			"value":      c.Value,
+			"value_usdt": c.ValueUsdt,
 		},
 	}
 
@@ -61,11 +62,12 @@ func NewCoin(name string, value float64) Coin {
 	}
 }
 
-func CreateCoin(name string, value float64) (Coin, error) {
+func CreateCoin(Name string, Value float64, ValueUsdt float64) (Coin, error) {
 	coin := Coin{
-		ID:    bson.NewObjectId(),
-		Name:  name,
-		Value: value,
+		ID:        bson.NewObjectId(),
+		Name:      Name,
+		Value:     Value,
+		ValueUsdt: ValueUsdt,
 	}
 
 	err := coin.Create()

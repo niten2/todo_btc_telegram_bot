@@ -1,17 +1,17 @@
 package bot_api
 
 import (
-  "fmt"
+	"fmt"
 
-  "os"
-  "regexp"
-  "gopkg.in/telegram-bot-api.v4"
+	"gopkg.in/telegram-bot-api.v4"
+	"os"
+	"regexp"
 
-  "app-telegram/logger"
-  "github.com/sirupsen/logrus"
+	"app-telegram/logger"
+	"github.com/sirupsen/logrus"
 
-  "app-telegram/models"
-  "app-telegram/config"
+	"app-telegram/config"
+	"app-telegram/models"
 )
 
 const MessageError = "Something went wrong"
@@ -32,121 +32,121 @@ const MessageSettings = `
 `
 
 func InitActions() {
-  fmt.Println("InitActions for bot")
+	fmt.Println("InitActions for bot")
 
-  u := tgbotapi.NewUpdate(0)
-  u.Timeout = 60
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
 
-  updates, err := Bot.GetUpdatesChan(u)
+	updates, err := Bot.GetUpdatesChan(u)
 
-  if err != nil {
-    logger.Log.Fatal(err)
-  }
+	if err != nil {
+		logger.Log.Fatal(err)
+	}
 
-  // NOTE for testing
-  if config.Settings().IsEnvTest {
-    os.Exit(0)
-  }
+	// NOTE for testing
+	if config.Settings().IsEnvTest {
+		os.Exit(0)
+	}
 
-  for update := range updates {
-    if update.Message == nil {
-      continue
-    }
+	for update := range updates {
+		if update.Message == nil {
+			continue
+		}
 
-    user_name := update.Message.From.UserName
-    id_telegram := update.Message.Chat.ID
-    text := update.Message.Text
+		user_name := update.Message.From.UserName
+		id_telegram := update.Message.Chat.ID
+		text := update.Message.Text
 
-    _, _ = models.FindOrCreateUserByIdTelegram(user_name, id_telegram)
+		_, _ = models.FindOrCreateUserByIdTelegram(user_name, id_telegram)
 
-    logger.Log.WithFields(logrus.Fields{
-      "user_name": user_name,
-      "text": text,
-      "id_telegram": id_telegram,
-    }).Info("bot receive message")
+		logger.Log.WithFields(logrus.Fields{
+			"user_name":   user_name,
+			"text":        text,
+			"id_telegram": id_telegram,
+		}).Info("bot receive message")
 
-    message := CreateResponse(text, id_telegram)
-    response := tgbotapi.NewMessage(id_telegram, message)
+		message := CreateResponse(text, id_telegram)
+		response := tgbotapi.NewMessage(id_telegram, message)
 
-    Bot.Send(response)
-  }
+		Bot.Send(response)
+	}
 }
 
 func CreateResponse(input string, id_telegram int64) string {
-  var msg string
+	var msg string
 
-  switch {
-    case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
-      msg = CreateAlert(input, id_telegram)
-    case regexp.MustCompile("(plist)|(список)").MatchString(input):
-      msg = CreatePoloniexCoinList()
-    case regexp.MustCompile("(help)|(помощь)|(помо)").MatchString(input):
-      msg = MessageHelp
-    case regexp.MustCompile("(settings)|(настройки)|(настр)").MatchString(input):
-      msg = MessageSettings
-    default:
-      msg = MessageUnknown
-  }
+	switch {
+	case regexp.MustCompile(`^[p] [\D]* [\d\.]*`).MatchString(input):
+		msg = CreateAlert(input, id_telegram)
+	case regexp.MustCompile("(plist)|(список)").MatchString(input):
+		msg = CreatePoloniexCoinList()
+	case regexp.MustCompile("(help)|(помощь)|(помо)").MatchString(input):
+		msg = MessageHelp
+	case regexp.MustCompile("(settings)|(настройки)|(настр)").MatchString(input):
+		msg = MessageSettings
+	default:
+		msg = MessageUnknown
+	}
 
-  return msg
+	return msg
 }
 
 func CreateAlert(input string, id_telegram int64) string {
-  user, err := models.FindUserByIdTelegram(id_telegram)
+	user, err := models.FindUserByIdTelegram(id_telegram)
 
-  if err != nil {
-    user = models.NewUser("name", id_telegram)
-    user.Create()
-  }
+	if err != nil {
+		user = models.NewUser("name", id_telegram)
+		user.Create()
+	}
 
-  alert, err := models.NewAlert(input)
+	alert, err := models.NewAlert(input)
 
-  _, err = models.FindCoinByName(alert.Name)
+	_, err = models.FindCoinByName(alert.Name)
 
-  if err != nil {
-    logger.Log.Warn(err)
-    return MessageError
-  }
+	if err != nil {
+		logger.Log.Warn(err)
+		return MessageError
+	}
 
-  user.Alerts = append(user.Alerts, alert)
-  err = user.Save()
+	user.Alerts = append(user.Alerts, alert)
+	err = user.Save()
 
-  if err != nil {
-    logger.Log.Warn(err)
-    return MessageError
-  }
+	if err != nil {
+		logger.Log.Warn(err)
+		return MessageError
+	}
 
-  return MessageAddAlert
+	return MessageAddAlert
 }
 
 func CreatePoloniexCoinList() string {
-  coins, err := models.FindCoinAll()
+	coins, err := models.FindCoinAll()
 
-  if err != nil {
-    logger.Log.Warn(err)
-    return MessageError
-  }
+	if err != nil {
+		logger.Log.Warn(err)
+		return MessageError
+	}
 
-  if len(coins) == 0 {
-    return MessageDataNotFound
-  }
+	if len(coins) == 0 {
+		return MessageDataNotFound
+	}
 
-  return models.CreatePoloniexCoinList(coins)
+	return models.CreatePoloniexCoinList(coins)
 }
 
 func SendMessage(id_telegram int64, message string) {
-  // NOTE for testing
-  if config.Settings().IsEnvTest {
-    return
-  }
+	// NOTE for testing
+	if config.Settings().IsEnvTest {
+		return
+	}
 
-  logger.Log.WithFields(logrus.Fields{
-    "id_telegram": id_telegram,
-    "message": message,
-  }).Info("bot send message")
+	logger.Log.WithFields(logrus.Fields{
+		"id_telegram": id_telegram,
+		"message":     message,
+	}).Info("bot send message")
 
-  response := tgbotapi.NewMessage(id_telegram, message)
-  Bot.Send(response)
+	response := tgbotapi.NewMessage(id_telegram, message)
+	Bot.Send(response)
 }
 
 // TODO add info btc by shedule
@@ -162,40 +162,57 @@ func SendMessage(id_telegram int64, message string) {
 
 // NOTE check coin
 func CheckCoin() {
-  logger.Log.Info("CheckCoin start")
+	logger.Log.Info("CheckCoin start")
 
-  err := models.FetchCoin()
+	err := models.FetchCoin()
 
-  if err != nil {
-    logger.Log.WithFields(logrus.Fields{
-      "err": err,
-    }).Warn("CheckCoin")
-  } else {
-    logger.Log.Info("FetchCoin successfully updated")
-  }
+	if err != nil {
+		logger.Log.WithFields(logrus.Fields{
+			"err": err,
+		}).Warn("CheckCoin")
+	} else {
+		logger.Log.Info("FetchCoin successfully updated")
+	}
 
-  CheckUsersAlert()
+	AddUsdtCoin()
+	CheckUsersAlert()
 }
 
 func CheckUsersAlert() {
-  users, err := models.FindUserAll()
+	users, err := models.FindUserAll()
 
-  if err != nil {
-    logger.Log.Warn(err)
-  }
+	if err != nil {
+		logger.Log.Warn(err)
+	}
 
-  for _, user := range users {
-    message, err := user.CheckAndRemoveUserAlert()
+	for _, user := range users {
+		message, err := user.CheckAndRemoveUserAlert()
 
-    if err != nil {
-      logger.Log.WithFields(logrus.Fields{
-        "err": err,
-      }).Warn("CheckUsersAlert")
-    }
+		if err != nil {
+			logger.Log.WithFields(logrus.Fields{
+				"err": err,
+			}).Warn("CheckUsersAlert")
+		}
 
-    if message != "" {
-      SendMessage(user.IdTelegram, message)
-    }
-  }
+		if message != "" {
+			SendMessage(user.IdTelegram, message)
+		}
+	}
 }
 
+func AddUsdtCoin() {
+	coin, err := models.FindCoinByName("USDT_BTC")
+
+	if err != nil {
+		return
+	}
+
+	course_btc := coin.Value
+	coins, err := models.FindCoinAll()
+
+	for _, coin := range coins {
+		coin.ValueUsdt = coin.Value * course_btc
+
+		coin.Save()
+	}
+}
