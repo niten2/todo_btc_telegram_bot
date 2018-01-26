@@ -1,59 +1,58 @@
 package models
 
 import (
-  // "fmt"
+	// "fmt"
 
-  "testing"
-  . "github.com/smartystreets/goconvey/convey"
-  "gopkg.in/h2non/gock.v1"
+	. "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/h2non/gock.v1"
+	"testing"
 
-  "app-telegram/test"
+	"app-telegram/test"
 )
 
-
 func TestCoin(t *testing.T) {
-  test.Setup()
+	test.Setup()
 
-  Convey("Coin.Create()", t, func() {
-    coin := NewCoin("test", 123)
-    coin.Create()
+	Convey("Coin.Create()", t, func() {
+		coin := NewCoin("test", 123)
+		coin.Create()
 
-    coin, _ = FindCoinById(string(coin.ID))
+		coin, _ = FindCoinById(string(coin.ID))
 
-    So(coin, ShouldNotBeNil)
-  })
+		So(coin, ShouldNotBeNil)
+	})
 
-  Convey("Coin.Save()", t, func() {
-    coin, _ := CreateCoin("test", 123)
-    coin, _ = FindCoinById(string(coin.ID))
+	Convey("Coin.Save()", t, func() {
+		coin, _ := CreateCoin("test", 123, 123)
+		coin, _ = FindCoinById(string(coin.ID))
 
-    So(coin.Name, ShouldEqual, "test")
-    So(coin.Value, ShouldEqual, 123)
-  })
+		So(coin.Name, ShouldEqual, "test")
+		So(coin.Value, ShouldEqual, 123)
+	})
 
-  Convey("NewCoin", t, func() {
-    coin := NewCoin("test", 123)
+	Convey("NewCoin", t, func() {
+		coin := NewCoin("test", 123)
 
-    So(coin, ShouldNotBeNil)
-    So(coin.ID, ShouldNotBeNil)
-  })
+		So(coin, ShouldNotBeNil)
+		So(coin.ID, ShouldNotBeNil)
+	})
 
-  Convey("FindCoinById", t, func() {
-    coin, _ := CreateCoin("test", 123)
-    coin, _ = FindCoinById(string(coin.ID))
+	Convey("FindCoinById", t, func() {
+		coin, _ := CreateCoin("test", 123, 123)
+		coin, _ = FindCoinById(string(coin.ID))
 
-    So(coin, ShouldNotBeNil)
-  })
+		So(coin, ShouldNotBeNil)
+	})
 
-  Convey("FindCoinByName", t, func() {
-    coin, _ := CreateCoin("test", 123)
-    coin, _ = FindCoinByName(string(coin.Name))
+	Convey("FindCoinByName", t, func() {
+		coin, _ := CreateCoin("test", 123, 123)
+		coin, _ = FindCoinByName(string(coin.Name))
 
-    So(coin, ShouldNotBeNil)
-  })
+		So(coin, ShouldNotBeNil)
+	})
 
-  Convey("FetchCoin", t, func() {
-    body := `{
+	Convey("FetchCoin", t, func() {
+		body := `{
       "BTC_BCN": {
         "id": 7,
         "last": "0.00000066",
@@ -80,19 +79,19 @@ func TestCoin(t *testing.T) {
       }
     }`
 
-    defer gock.Disable()
+		defer gock.Disable()
 
-    gock.New("https://poloniex.com/public?command=returnTicker").
-      Reply(200).
-      BodyString(body)
+		gock.New("https://poloniex.com/public?command=returnTicker").
+			Reply(200).
+			BodyString(body)
 
-    _ = FetchCoin()
+		_ = FetchCoin()
 
-    coin1, _ := FindCoinByName("BTC_BCN")
-    coin2, _ := FindCoinByName("BTC_BELA")
+		coin1, _ := FindCoinByName("BTC_BCN")
+		coin2, _ := FindCoinByName("BTC_BELA")
 
-    So(coin1, ShouldNotBeNil)
-    So(coin2, ShouldNotBeNil)
-  })
+		So(coin1, ShouldNotBeNil)
+		So(coin2, ShouldNotBeNil)
+	})
 
 }

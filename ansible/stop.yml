@@ -1,0 +1,8 @@
+- hosts: bot
+
+  tasks:
+    - name: docker-compose stop
+      command: docker-compose stop
+      register: output
+      args:
+        chdir: ~/app-telegram
