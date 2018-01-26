@@ -17,14 +17,20 @@
         src: ../app-telegram
         dest: ~/app-telegram/app-telegram
 
+    - name: copy docker-compose.yml
+      copy:
+        src: ../docker-compose.yml
+        dest: ~/app-telegram/docker-compose.yml
+
     - name: docker-compose build
       shell: docker-compose build
       args:
         chdir: ~/app-telegram
       register: output
 
-    - debug: msg=output.stdout
+    - debug: msg={{output.stdout}}
 
+    # NOTE error shell
     # - name: clear intermediate containers
     #   shell: "docker rmi $(docker images -f 'dangling=true' -q)"
     #   args:
@@ -37,4 +43,4 @@
         chdir: ~/app-telegram
       register: output
 
-    - debug: msg=output.stdout
+    - debug: msg={{output.stdout}}
