@@ -3,18 +3,18 @@
   tasks:
     - name: docker-compose stop
       command: docker-compose stop
-      register: output
       args:
         chdir: ~/app-telegram
+      register: output
 
     - name: copy .env.production
       copy:
-        src: "../../../../.env.production"
-        dest: "~/app-telegram/.env"
+        src: ../.env.production
+        dest: ~/app-telegram/.env
 
     - name: copy go build app-telegram
       copy:
-        src: ../../../../app-telegram
+        src: ../app-telegram
         dest: ~/app-telegram/app-telegram
 
     - name: docker-compose build
@@ -23,14 +23,13 @@
         chdir: ~/app-telegram
       register: output
 
-    - debug:
-      msg: {{ output.stdout }}
+    - debug: msg=output.stdout
 
-    - name: clear intermediate containers
-      command: docker rmi $(docker images -f "dangling=true" -q)
-      args:
-        chdir: ~/app-telegram
-      register: output
+    # - name: clear intermediate containers
+    #   shell: "docker rmi $(docker images -f 'dangling=true' -q)"
+    #   args:
+    #     chdir: ~/app-telegram
+    #   register: output
 
     - name: docker-compose up -d
       shell: docker-compose up -d
@@ -38,5 +37,4 @@
         chdir: ~/app-telegram
       register: output
 
-    - debug:
-      msg: {{ output.stdout }}
+    - debug: msg=output.stdout
