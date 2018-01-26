@@ -110,8 +110,6 @@ func TestCheckAndRemoveUserAlert(t *testing.T) {
 
 		message, _ := user.CheckAndRemoveUserAlert()
 
-		fmt.Println(message)
-
 		resMessage := `ALERT BTC_XPM 1.000000 < 0.400000 \n`
 
 		So(message, ShouldEqual, resMessage)
