@@ -1,6 +1,6 @@
 - hosts: bot
 
-  # NOTE before need install for use python 2.7
+  # NOTE may need install python 2.7
   # apt-get update; apt install -y python-minimal
 
   # NOTE may need setup locales
