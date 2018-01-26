@@ -1,0 +1,8 @@
+- hosts: bot
+
+  tasks:
+    - name: cat file
+      command: cat ~/app-telegram/logrus.log
+      register: file
+
+    - debug: msg="{{ file.stdout.replace('\\"',':').split('\n') }}"
