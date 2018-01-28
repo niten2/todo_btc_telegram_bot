@@ -3,6 +3,7 @@ package models
 import (
 	// "fmt"
 
+	// "errors"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 
@@ -26,5 +27,13 @@ func TestAlert(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(res, ShouldNotBeNil)
 		So(res.Name, ShouldEqual, "BTC_SBD")
+	})
+
+	Convey("NewAlert with invalid string", t, func() {
+		CreateCoin("BTC_SBD", 1, 1)
+		res, err := NewAlert("string")
+
+		So(err.Error(), ShouldEqual, "input not valid")
+		So(res, ShouldNotBeNil)
 	})
 }
