@@ -13,4 +13,5 @@
         chdir: ~/app-telegram
       register: output
 
-    - debug: msg="{{ output.stdout }}"
+    # - debug: msg="{{ output.stdout }}"
+    - debug: msg="{{ output.stdout.replace('\\"',':').split('\n') }}"
