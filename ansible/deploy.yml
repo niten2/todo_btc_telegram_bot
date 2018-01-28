@@ -1,12 +1,8 @@
 - hosts: bot
 
   tasks:
-    - name: docker-compose stop
-      command: docker-compose stop
-      args:
-        chdir: ~/app-telegram
-      register: output
 
+    # NOTE copy
     - name: copy .env.production
       copy:
         src: ../.env.production
@@ -22,13 +18,22 @@
         src: ../docker-compose.yml
         dest: ~/app-telegram/docker-compose.yml
 
-    - name: docker-compose build
-      shell: docker-compose build
-      args:
-        chdir: ~/app-telegram
-      register: output
 
-    - debug: msg={{output.stdout}}
+
+
+    # - name: docker-compose rm
+    #   command: docker-compose rm
+    #   args:
+    #     chdir: ~/app-telegram
+    #   register: output
+
+    # - name: docker-compose build
+    #   shell: docker-compose build
+    #   args:
+    #     chdir: ~/app-telegram
+    #   register: output
+
+    # - debug: msg={{output.stdout}}
 
     # NOTE error shell
     # - name: clear intermediate containers
@@ -37,10 +42,10 @@
     #     chdir: ~/app-telegram
     #   register: output
 
-    - name: docker-compose up -d
-      shell: docker-compose up -d
-      args:
-        chdir: ~/app-telegram
-      register: output
+    # - name: docker-compose up -d
+    #   shell: docker-compose up -d
+    #   args:
+    #     chdir: ~/app-telegram
+    #   register: output
 
-    - debug: msg={{output.stdout}}
+    # - debug: msg={{output.stdout}}

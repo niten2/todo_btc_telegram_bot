@@ -90,7 +90,9 @@ func (user *User) CheckAndRemoveUserAlert() (string, error) {
 		}
 
 		if res {
-			message += fmt.Sprintf(`ALERT %s %f %s %f \n`, alert.Name, alert.Value, alert.Compare, coin.ValueUsdt)
+			message += fmt.Sprintf(`ALERT %s %f %s %f
+		  `, alert.Name, coin.ValueUsdt, alert.Compare, alert.Value)
+
 			user.RemoveAlert(alert)
 		}
 	}

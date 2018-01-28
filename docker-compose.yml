@@ -10,7 +10,6 @@ services:
     volumes:
       - ./app-telegram:/app-telegram/app-telegram
       - ./.env:/app-telegram/.env
-      - ./logrus.log:/app-telegram/logrus.log
 
   mongo:
     container_name: db
