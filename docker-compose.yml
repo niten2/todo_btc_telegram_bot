@@ -13,6 +13,7 @@ services:
       - ./logrus.log:/app-telegram/logrus.log
 
   mongo:
+    container_name: db
     ports:
       - 27017:27017
     image: mongo:3.5.13

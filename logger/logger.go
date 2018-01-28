@@ -1,25 +1,26 @@
 package logger
 
 import (
-  "fmt"
+	// "fmt"
 
-  "os"
-  "github.com/sirupsen/logrus"
-
-  "app-telegram/config"
+	"github.com/sirupsen/logrus"
+	"os"
+	// "app-telegram/config"
 )
 
 var Log = logrus.New()
 
 func InitFileLogger() {
-  if config.Settings().IsEnvTest {
-    Log.Out = os.Stdout
-  }
+	Log.Out = os.Stdout
 
-  file, err := os.OpenFile("logrus.log", os.O_CREATE | os.O_WRONLY, 0666)
+	// if config.Settings().IsEnvTest {
+	//   Log.Out = os.Stdout
+	// }
 
-  if err == nil {
-    fmt.Println(err)
-    Log.Out = file
-  }
+	// file, err := os.OpenFile("logrus.log", os.O_CREATE | os.O_WRONLY, 0666)
+
+	// if err == nil {
+	//   fmt.Println(err)
+	//   Log.Out = file
+	// }
 }

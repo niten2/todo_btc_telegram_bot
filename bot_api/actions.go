@@ -57,7 +57,11 @@ func InitActions() {
 		id_telegram := update.Message.Chat.ID
 		text := update.Message.Text
 
-		_, _ = models.FindOrCreateUserByIdTelegram(user_name, id_telegram)
+		_, err = models.FindOrCreateUserByIdTelegram(user_name, id_telegram)
+
+		if err != nil {
+			logger.Log.Warn("FindOrCreateUserByIdTelegram", err)
+		}
 
 		logger.Log.WithFields(logrus.Fields{
 			"user_name":   user_name,
@@ -175,6 +179,7 @@ func CheckCoin() {
 	}
 
 	AddUsdtCoin()
+
 	CheckUsersAlert()
 }
 

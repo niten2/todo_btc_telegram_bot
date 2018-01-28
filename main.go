@@ -1,20 +1,20 @@
 package main
 
 import (
-  // "fmt"
+	// "fmt"
 
-  "app-telegram/db"
-  "app-telegram/logger"
+	"app-telegram/db"
+	"app-telegram/logger"
 
-  "app-telegram/bot_api"
-  "app-telegram/schedule"
+	"app-telegram/bot_api"
+	"app-telegram/schedule"
 )
 
 func main() {
-  db.Connect()
-  logger.InitFileLogger()
+	db.Connect()
+	logger.InitFileLogger()
 
-  bot_api.InitBot()
-  schedule.InitSchedule()
-  bot_api.InitActions()
+	bot_api.InitBot()
+	schedule.InitSchedule()
+	bot_api.InitActions()
 }

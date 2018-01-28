@@ -1,31 +1,35 @@
 package bot_api
 
 import (
-  // "fmt"
+	// "fmt"
 
-  "gopkg.in/telegram-bot-api.v4"
-  "app-telegram/logger"
-  "github.com/sirupsen/logrus"
+	"app-telegram/logger"
+	"github.com/sirupsen/logrus"
+	"gopkg.in/telegram-bot-api.v4"
 
-  "app-telegram/config"
+	"app-telegram/config"
 )
 
 var Bot *tgbotapi.BotAPI
 
 func InitBot() {
-  telegram_token := config.Settings().TelegramToken
-  bot, err := tgbotapi.NewBotAPI(telegram_token)
+	telegram_token := config.Settings().TelegramToken
 
-  if err != nil {
-    logger.Log.Fatal(err)
-  }
+	if telegram_token == "" {
+		logger.Log.Fatal("telegram_token not found")
+	}
 
-  // bot.Debug = true
+	bot, err := tgbotapi.NewBotAPI(telegram_token)
 
-  logger.Log.WithFields(logrus.Fields{
-    "user": bot.Self.UserName,
-  }).Info("Authorized on account")
+	if err != nil {
+		logger.Log.Fatal(err)
+	}
 
-  Bot = bot
+	// bot.Debug = true
+
+	logger.Log.WithFields(logrus.Fields{
+		"user": bot.Self.UserName,
+	}).Info("Authorized on account")
+
+	Bot = bot
 }
-
