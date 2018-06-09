@@ -1,30 +1,34 @@
-**Setup**
----
+### Description
 
-Bot @coint_info_bot
-https://web.telegram.org/#/im?p=@coint_info_bot
+  - /start
+  - /help (list commands)
 
-#### Feature
-- show current btc by schedule
-- show current btc wallet by schedule
-- add a reminder when the price changes (poloniex)
+### Details
+
+  - Bot @coint_info_bot
+  - https://web.telegram.org/#/im?p=@coint_info_bot
+
+#### Features
+
+  - show current btc by schedule
+  - show current btc wallet by schedule
+  - add a reminder when the price changes (poloniex)
 
 #### Development mode
-- cp .env.sample .env
-- go run
+
+  - cp .env.sample .env
+  - go run
 
 #### Production mode
-- go build .
 
-- cp .env.sample .env.production
-- edit .env.production
+  - go build .
 
-after you may use ansible script
-- cd ./ansible
-- cp hosts.sample hosts
-- edit ./ansible/hosts
-- ansible-playbook setup (install docker, move app on remote server)
+  - cp .env.sample .env.production
+  - edit .env.production
 
-### Describe about bot
-- /start
-- /help (list commands)
+#### Deploy (asible)
+
+  - cd ./ansible
+  - cp hosts.sample hosts
+  - edit ./ansible/hosts
+  - ansible-playbook setup (install docker, move app on remote server)
